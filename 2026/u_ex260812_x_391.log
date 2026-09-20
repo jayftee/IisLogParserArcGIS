@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-12 01:03:01
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-12 01:02:58 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 404 0 2 1111 138.197.165.90
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-12 02:28:51
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-12 02:28:48 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1114 44.201.107.251
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-12 14:50:13
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-12 14:50:10 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1246 143.110.239.2
+2026-08-12 14:50:36 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 143.110.239.2
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-12 17:34:52
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-12 17:34:49 199.214.108.162 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1094 164.92.82.91
+2026-08-12 17:35:15 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 164.92.82.91

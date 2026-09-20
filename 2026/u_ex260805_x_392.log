@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-05 02:21:52
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-05 02:21:49 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1159 164.92.106.15
+2026-08-05 02:39:54 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 0 44.203.114.235
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-05 12:19:06
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-05 12:19:03 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1325 157.245.222.108
+2026-08-05 12:19:24 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 157.245.222.108
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-05 14:23:40
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-05 14:23:37 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1135 128.199.8.140
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-05 15:10:04
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-05 15:10:01 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1152 165.227.172.206

@@ -1,0 +1,20 @@
+# 12 — ArcGIS Server Service aggregate
+
+**What to build:** For a processed day, the database holds one row per ArcGIS Server service (site, folder, service_name, service_type) with accumulated hits, successful_hits, failed_hits, and time-taken — excluding admin/Portal traffic.
+
+**Blocked by:** 04, 05, 07
+
+**Status:** done
+
+- [x] Service identity (site, folder, service_name, service_type) is parsed from URI stems shaped like `/site/rest/services/[folder/]service_name/service_type/...`, reusing the root/site normalization from ticket 07
+- [x] `folder` is absent (not a placeholder value) for folderless services
+- [x] The trailing operation segment (`export`, `query`, `applyEdits`, …) is not part of the identity
+- [x] `/site/admin/*` and `/portal/*` traffic is excluded via path-segment checks, not substring matching
+- [x] A request that merely contains "rest" somewhere in its path or query string, without being a genuine `/site/rest/services/...` call, is not miscounted as a service hit
+- [x] `successful_hits`/`failed_hits` are split at `sc-status < 400`, and `hits` always equals `successful_hits + failed_hits`
+- [x] `Domain.Tests` cover: foldered and folderless services, admin exclusion, portal exclusion, the "contains rest but isn't a service call" false-positive case, and the success/failure split
+- [x] Running the program against a real day of logs populates this table with plausible, spot-checkable rows
+
+## Comments
+
+Implemented in `8bd0e7c`: `ArcGisServiceIdentityParser.TryParse` (`Domain/Aggregation/`) parses the (site, folder, service_name, service_type) identity from a `cs-uri-stem`, reusing `RootNormalizer` for `site` per ticket 07. Admin (`/site/admin/*`) and Portal (`/portal/*`) traffic is excluded via explicit path-segment checks (not just structural fallout), so a hypothetical `/portal/rest/services/...` proxy path is still excluded even though it otherwise matches the service shape. Foldered vs. folderless is disambiguated by which segment is itself type-shaped (ends with `Server`, matching every real service type observed in the corpus: MapServer, FeatureServer, GeocodeServer, GPServer, ImageServer, GeometryServer, VectorTileServer, LRServer, ValidationServer, WMSServer); the foldered (3-segment) interpretation is tried before the shorter folderless one, since both shapes can have 3 remaining segments and only a foldered path's 3rd segment is itself type-shaped — this was caught by code review against a hypothetical folder/service-name collision and covered by a regression test. `folder`, `service_name`, and `service_type` are lowercased for case-insensitive grouping; code review plus a corpus scan found 11 real services (e.g. `Environment` vs `environment` folders) fragmenting into duplicate rows under raw casing, confirming this wasn't a hypothetical concern. `ByArcGisServiceAggregator.Aggregate` groups matching requests by identity, summing hits/time-taken and splitting `successful_hits`/`failed_hits` at `sc-status < 400`. `ByArcGisServiceRepository` supplies CRUD over the pre-existing `aggregated_by_arcgis_service` table (from ticket 05's schema). Wired into `Program.cs`'s replace-on-run transaction alongside the other six aggregates. `Domain.Tests` cover foldered/folderless parsing (with and without a trailing operation segment), the folder/type ambiguity, admin exclusion, Portal exclusion (including the proxy-path case), the "contains rest but isn't a service call" false-positive case, the success/failure split, and case-insensitive grouping. Verified against the real 2026 log corpus across three dates (2026-01-02: 78 rows/694 hits; 2026-01-08: 112 rows/1288 hits; 2026-08-23: 52 rows/1528 hits, including a genuine folderless row): `hits = successful_hits + failed_hits` held for every row in all three runs, and the case-insensitive grouping fix was confirmed to merge what would otherwise be duplicate rows. Full suite green: 129 Domain, 25 Data, 44 Host tests passing; `/code-review` flagged the folder/type ambiguity and the case-folding gap, both fixed before commit.

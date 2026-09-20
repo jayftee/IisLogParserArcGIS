@@ -1,0 +1,33 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-09 00:38:30
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-09 00:38:27 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/142.0.0.0+Safari/537.36 https://142.229.246.171/ 404 0 2 1101 206.189.118.147
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-09 02:40:24
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-09 02:40:21 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1101 3.86.114.186
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-09 05:12:43
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-09 05:12:40 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 visionheight.com/scan+Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+Chrome/126.0.0.0+Safari/537.36 http://142.229.246.171/robots.txt 404 0 2 1283 18.116.101.220
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-09 06:13:50
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-09 06:13:47 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1116 159.89.124.112
+2026-09-09 06:18:17 199.214.108.162 POST /proxy - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+Claude-User/1.0;++https://www.anthropic.com/claude-user) https://142.229.246.171:443 405 0 1 258 136.66.187.245
+2026-09-09 06:18:57 199.214.108.162 GET /debug/pprof/cmdline - 443 - 199.214.109.77 Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+14_5)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/148.0.5841.129+Safari/537.36;+compatible;+Claude-User/1.0;++Claude-User@anthropic.com - 404 0 2 6 136.66.187.245
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-09 08:23:54
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-09 08:23:51 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1109 192.241.179.235
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-09 17:19:30
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-09 17:19:27 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1096 64.23.161.101
+2026-09-09 17:19:50 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 64.23.161.101

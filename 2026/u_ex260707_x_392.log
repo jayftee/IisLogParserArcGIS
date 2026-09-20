@@ -1,0 +1,27 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 01:35:19
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 01:35:16 199.214.108.163 GET /robots.txt - 443 - 199.214.109.76 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 1126 66.132.195.60
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 03:37:16
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 03:37:13 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 1130 66.132.172.184
+2026-07-07 03:55:20 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1 137.184.95.216
+2026-07-07 03:55:42 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1 137.184.95.216
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 15:34:01
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 15:33:58 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1256 178.128.32.203
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 21:46:09
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 21:46:06 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1138 157.245.243.118
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 23:38:39
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 23:38:36 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 404 0 2 1127 143.198.47.188

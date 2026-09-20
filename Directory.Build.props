@@ -1,0 +1,131 @@
+<Project>
+  <PropertyGroup>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <!--
+      Without this, IDE0xxx/IDE1xxx code-style diagnostics (e.g. IDE1006 naming rules) configured in
+      .editorconfig only ever appear as live IDE squiggles; `dotnet build` silently skips them.
+    -->
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+
+    <!--
+      OOB Roslyn/NetAnalyzers ("CA" rules) ship inside the SDK already, but at a narrow
+      "recommended" severity subset by default — most CA rules never actually fire unless asked
+      for explicitly. AllEnabledByDefault + latest is the deliberately aggressive choice here: every
+      future project starts maximally noisy, and individual rules get suppressed above (in this file)
+      or via .editorconfig severities as they're found to be more noise than signal, not the other way
+      around. Note this isn't literally "all rules, no exceptions" even so — a handful stay excluded
+      even in AllEnabledByDefault mode (see https://github.com/dotnet/roslyn-analyzers/issues/4530).
+    -->
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <AnalysisLevel>latest</AnalysisLevel>
+    <AnalysisMode>AllEnabledByDefault</AnalysisMode>
+
+    <!--
+      Documentation is mandatory by default, repo-wide: every project that imports this file gets
+      GenerateDocumentationFile=true and SA1600/SA1601/SA1602 (elements/partial elements/enum items
+      must be documented) active and un-suppressed. SA1611/SA1615/etc. (doc-completeness checks for
+      any comment that *is* written) were already active before this and don't need touching — this
+      just adds the "every applicable member needs one at all" requirement on top. A project that
+      genuinely can't satisfy this opts out locally with GenerateDocumentationFile=false, not by
+      editing this file.
+    -->
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+    <!--
+      SA1633/SA1636: file header requirements.
+      Permanent stance, not a bootstrap placeholder: this base doesn't mandate copyright file
+      headers — most modern .NET code doesn't use them. A project that needs them (company policy,
+      OSS license banner) should remove these two and fill in stylecop.json's documentationRules
+      locally, not by editing this shared file.
+
+      SA0001: XML comment analysis is disabled due to project configuration.
+      Kept suppressed as a safety net, though confirmed (via a full clean rebuild, not assumed) to
+      no longer actually fire anywhere in this repo — not in a project with GenerateDocumentationFile
+      left at its repo-wide default of true, and not in tests/CleanCoders.Analyzers.Tests.csproj,
+      which opts out locally with GenerateDocumentationFile=false. It exists for the case a future
+      project sets DocumentationMode to None some other way and would otherwise see it as noise.
+    -->
+    <NoWarn>$(NoWarn);SA0001</NoWarn>
+    <NoWarn>$(NoWarn);SA1633</NoWarn>
+    <NoWarn>$(NoWarn);SA1636</NoWarn>
+    <!--
+      SA1516: Elements should be separated by blank line.
+      Fires on nearly every file's using-directive block: this repo's own .editorconfig already
+      declares dotnet_separate_import_directive_groups = true, but no file has ever actually been
+      formatted to match it. Suppressed until a repo-wide reformat happens as its own pass.
+    -->
+    <NoWarn>$(NoWarn);SA1516</NoWarn>
+    <!--
+      SA1101: Prefix local calls with this.
+      Suppressed because the repository follows the .NET framework convention of omitting this.
+    -->
+    <NoWarn>$(NoWarn);SA1101</NoWarn>
+    <!--
+      SA1309: Field names should not begin with an underscore.
+      Suppressed because the repository follows the .NET framework convention for private fields.
+    -->
+    <NoWarn>$(NoWarn);SA1309</NoWarn>
+    <!--
+      CA1416: Validate platform compatibility.
+      Suppressed at bootstrap because a new project's target platform(s) usually aren't decided yet
+      at this point — CA1416 needs that decision to be meaningful. Turn this back on explicitly, in
+      the project that needs it, once the platform decision is actually made.
+    -->
+    <NoWarn>$(NoWarn);CA1416</NoWarn>
+    <!--
+      CA1515: Types can be made internal.
+      Suppressed at bootstrap because a new project's public/internal API surface usually isn't
+      decided yet at this point either — CA1515 needs that decision to be meaningful. Turn this
+      back on explicitly, in the project that needs it, once the surface is actually decided.
+    -->
+    <NoWarn>$(NoWarn);CA1515</NoWarn>
+    <!--
+      CA1848: Use the LoggerMessage delegates instead of calling ILogger extension methods.
+      CA1873: Evaluation of this argument may be expensive and unnecessary if logging is disabled.
+      Suppressed repo-wide: ADR 0003 deliberately standardizes on plain ILogger<T> calls (an optional
+      ILoggerFactory constructor parameter, falling back to a null logger) for testability across every
+      logging-capable class in all three projects. This program runs once per day as a batch job, not on
+      a hot path, so LoggerMessage's source-generated delegate overhead is not worth the boilerplate it
+      would add to every logging-capable class.
+    -->
+    <NoWarn>$(NoWarn);CA1848</NoWarn>
+    <NoWarn>$(NoWarn);CA1873</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <!--
+      This PackageReference applies to every project that imports this file, so the wiring below must
+      too: without it, StyleCop.Analyzers never discovers this repo-root stylecop.json in any project
+      and silently falls back to its classic defaults (e.g. usings *inside* the namespace) instead of
+      this repo's chosen settings. $(MSBuildThisFileDirectory) anchors the path to this file's own
+      location, so it resolves correctly regardless of which project imports it.
+    -->
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />
+
+    <!--
+      Async/threading naming and correctness rules (VSTHRDxxx) — e.g. VSTHRD200 "Use Async naming
+      convention", VSTHRD100 "Avoid async void". Analyzer-only; no settings file, tuned entirely via
+      dotnet_diagnostic.VSTHRDxxx.severity lines in .editorconfig, same as everything else here.
+    -->
+    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="18.7.23">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+
+    <!--
+      Custom Clean-Code-derived Roslyn analyzer (CC#### rules), sourced from the local NuGet feed
+      (see this skill's CONTEXT.md — not on nuget.org). 0.2.1 is the floor: it's the first version
+      with cleancoders.json validated against an embedded schema at build time; earlier versions
+      predate that check entirely. Pinned to 0.2.3 (latest in C:\_LocalNuGet as of this writing) —
+      bump this whenever a newer build lands in the feed.
+    -->
+    <PackageReference Include="CleanCoders.Analyzers" Version="0.2.3" />
+    <AdditionalFiles Include="$(MSBuildThisFileDirectory)cleancoders.json" Link="cleancoders.json" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,21 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-28 02:29:14
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-28 02:29:11 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1105 54.91.134.82
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-28 05:15:19
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-28 05:15:16 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1288 137.184.32.56
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-28 07:36:42
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-28 07:36:39 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 visionheight.com/scan+Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+Chrome/126.0.0.0+Safari/537.36 - 404 0 2 1105 3.130.168.2
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-28 21:13:57
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-28 21:13:54 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1120 64.23.214.73
+2026-08-28 21:14:21 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 64.23.214.73

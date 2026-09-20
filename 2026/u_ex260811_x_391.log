@@ -1,0 +1,18 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-11 00:17:22
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-11 00:16:52 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 77 66.132.195.50
+2026-08-11 00:32:47 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+6.1;+WOW64;+rv:54.0)+Gecko/20100101+Firefox/54.0 - 404 0 2 0 74.82.47.2
+2026-08-11 02:37:43 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 77 100.58.203.239
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-11 07:07:54
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-11 07:07:51 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1255 185.247.137.114
+2026-08-11 07:08:32 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 0 143.198.150.150
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-11 07:31:29
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-11 07:31:26 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/142.0.0.0+Safari/537.36 https://142.229.246.171/ 404 0 2 1099 165.227.75.8

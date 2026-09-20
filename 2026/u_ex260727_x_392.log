@@ -1,0 +1,26 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-27 00:14:46
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-27 00:14:43 199.214.108.163 GET / - 443 - 199.215.128.82 - - 403 14 0 1276 -
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-27 02:16:41
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-27 02:16:38 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1129 185.247.137.234
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-27 04:32:56
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-27 04:32:53 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1134 143.198.225.197
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-27 04:53:44
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-27 04:53:41 199.214.108.163 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1335 64.23.214.73
+2026-07-27 04:59:12 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 1 167.94.146.58
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-27 17:49:32
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-27 17:49:29 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1151 147.182.241.81

@@ -1,0 +1,20 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-23 02:40:53
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-23 02:40:34 199.214.108.163 GET /robots.txt - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 104 107.21.191.211
+2026-07-23 03:15:07 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 98 147.182.225.86
+2026-07-23 04:38:50 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/142.0.0.0+Safari/537.36 https://142.229.246.171/ 404 0 2 110 137.184.4.92
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-23 06:56:17
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-23 06:56:14 199.214.108.163 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1318 164.92.106.15
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-23 15:43:25
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-23 15:43:22 199.214.108.163 GET /portal/home/ - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 200 0 0 4613 193.8.186.6
+2026-07-23 21:48:36 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 98 45.55.186.92
+2026-07-23 23:06:06 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 96 143.198.150.150
+2026-07-23 23:11:35 199.214.108.163 GET /portal/home - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/137.0.0.0+Safari/537.36 https://142.229.246.171:443/portal/ 302 0 0 53 93.152.224.155

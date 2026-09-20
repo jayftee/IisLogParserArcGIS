@@ -1,0 +1,19 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-07 00:02:54
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken X-Forwarded-For
+2026-06-07 00:02:33 199.214.100.221 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1443 143 137 71.6.199.23
+2026-06-07 00:19:00 199.214.100.221 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/109.0.0.0+Safari/537.36+OPR/95.0.0.0+(Edition+Yx+05) - 404 0 2 1443 306 5 65.49.1.41
+2026-06-07 00:48:26 199.214.100.221 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(X11;+Linux+x86_64;+rv:142.0)+Gecko/20100101+Firefox/142.0 https://142.229.246.171/ 404 0 2 1443 541 147 24.144.95.69
+2026-06-07 10:39:16 199.214.100.221 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1443 146 127 143.198.238.87
+2026-06-07 10:39:42 199.214.100.221 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1443 318 5 143.198.238.87
+2026-06-07 10:59:46 199.214.100.221 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1443 146 5 147.182.247.10
+2026-06-07 11:00:11 199.214.100.221 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1443 318 5 147.182.247.10
+2026-06-07 12:59:45 199.214.100.221 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(compatible;+Infrawatch/1.0;++https://infrawat.ch/) - 404 0 2 1443 250 122 89.21.67.147
+2026-06-07 14:55:39 199.214.100.221 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1443 147 115 143.198.225.197
+2026-06-07 14:56:03 199.214.100.221 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1443 319 5 143.198.225.197
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-07 18:27:19
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken X-Forwarded-For
+2026-06-07 18:27:16 199.214.100.221 GET /portal/home/ - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 200 0 0 388 485 19016 193.8.186.31

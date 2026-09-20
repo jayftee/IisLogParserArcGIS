@@ -1,0 +1,20 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-25 02:30:42
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-25 02:30:39 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1110 54.226.135.115
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-25 08:52:36
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-25 08:52:33 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 1238 164.92.114.247
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-25 09:24:15
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-25 09:24:12 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 1093 147.182.247.10
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-25 11:48:58
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-25 11:48:55 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1086 165.227.110.45

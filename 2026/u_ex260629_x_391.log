@@ -1,0 +1,24 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-29 02:41:41
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-29 02:41:38 199.214.108.162 GET /portal/home - 443 - 199.214.109.74 python-requests/2.31.0 - 302 0 0 3404 45.194.92.62
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-29 05:44:37
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-29 05:44:34 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1267 87.236.176.57
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-29 10:10:53
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-29 10:10:49 199.214.108.162 GET /portal/home - 443 - 199.214.109.76 python-requests/2.31.0 - 302 0 0 3717 45.194.92.62
+2026-06-29 11:39:08 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 74 35.172.129.253
+2026-06-29 14:17:40 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 80 147.182.225.86
+2026-06-29 15:13:55 199.214.108.162 GET /portal - 443 - 199.214.109.77 python-requests/2.31.0 - 302 0 0 17 45.194.92.62
+2026-06-29 18:51:52 199.214.108.162 GET /portal - 443 - 199.214.109.74 python-requests/2.31.0 - 302 0 0 7 45.194.92.62
+2026-06-29 20:36:55 199.214.108.162 GET /portal - 443 - 199.214.109.78 python-requests/2.31.0 - 302 0 0 3 45.194.92.62
+2026-06-29 20:37:16 199.214.108.162 GET /portal/home - 443 - 199.214.109.76 python-requests/2.31.0 - 302 0 0 73 45.194.92.62
+2026-06-29 21:49:11 199.214.108.162 GET /portal/home - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 302 0 0 31 136.109.41.20
+2026-06-29 23:39:02 199.214.108.162 GET /portal - 443 - 199.214.109.75 python-requests/2.31.0 - 302 0 0 2 45.194.92.62
+2026-06-29 23:39:23 199.214.108.162 GET /portal/home - 443 - 199.214.109.76 python-requests/2.31.0 - 302 0 0 28 45.194.92.62

@@ -1,0 +1,21 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 02:39:34
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 02:39:31 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1104 3.91.175.250
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 15:30:28
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 15:30:25 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(X11;+Linux+x86_64;+rv:142.0)+Gecko/20100101+Firefox/142.0 https://142.229.246.171/ 404 0 2 1241 159.89.162.156
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 20:35:27
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 20:35:24 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1090 147.182.202.179
+2026-07-07 20:35:50 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 147.182.202.179
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-07 21:46:07
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-07 21:46:04 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1096 185.247.137.133

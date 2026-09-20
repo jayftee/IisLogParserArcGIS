@@ -1,0 +1,18 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-18 06:04:04
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-18 06:04:01 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(X11;+Linux+x86_64;+rv:124.0)+Gecko/20100101+Firefox/124.0 - 404 0 2 1357 65.49.1.222
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-18 08:15:49
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-18 08:15:46 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 1094 66.132.172.220
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-18 13:13:44
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-18 13:13:41 199.214.108.162 GET /portal/home - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+5.1;+rv:9.0.1)+Gecko/20100101+Firefox/9.0.1 - 302 0 0 3604 103.215.75.74
+2026-08-18 18:11:38 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 93 64.225.74.178
+2026-08-18 19:24:10 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 visionheight.com/scan+Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+Chrome/126.0.0.0+Safari/537.36 http://142.229.246.171/robots.txt 404 0 2 79 3.130.168.2
+2026-08-18 21:20:03 199.214.108.162 GET /robots.txt - 443 - 199.214.109.78 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 85 66.132.172.183

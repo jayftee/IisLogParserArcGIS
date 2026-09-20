@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-13 00:12:24
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-13 00:12:01 199.214.108.162 GET / - 443 - 199.215.141.182 - - 403 14 0 7 -
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-13 00:39:40
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-13 00:39:37 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(X11;+Linux+x86_64;+rv:142.0)+Gecko/20100101+Firefox/142.0 https://142.229.246.171/ 404 0 2 1100 137.184.195.73
+2026-07-13 00:50:52 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/83.0.4103.61+Safari/537.36 - 404 0 2 0 66.228.47.158
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-13 02:38:17
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-13 02:38:14 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1090 3.85.51.81
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-13 17:33:00
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-13 17:32:57 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1249 159.89.124.112
+2026-07-13 17:34:07 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 0 71.6.135.131

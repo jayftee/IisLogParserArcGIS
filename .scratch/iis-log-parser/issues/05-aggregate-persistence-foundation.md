@@ -1,0 +1,24 @@
+# 05 — Aggregate persistence foundation
+
+**What to build:** The output SQLite database is ready to receive all seven aggregate tables before any aggregate logic exists, establishing the Repository/Query pattern the aggregate tickets will follow.
+
+**Blocked by:** 01
+
+**Status:** done
+
+- [x] All seven aggregate tables (by URI, by root, by user agent, by referer, by forwarded-for IP, by referer+URI, by ArcGIS Server Service) are created idempotently via `CREATE TABLE IF NOT EXISTS` at startup
+- [x] Running the program twice against the same database file causes no errors on the second run's schema creation
+- [x] A base Repository pattern (CRUD scoped to one table) and a separate Query class pattern (non-CRUD/reporting queries) are established per ADR 0002, ready for later tickets to implement per aggregate
+- [x] `Microsoft.Data.Sqlite` is the driver and Dapper executes all SQL — no ORM/change-tracking
+- [x] `Data.Tests` verify idempotent schema creation against a temporary-file SQLite database
+
+## Comments
+
+Implemented entirely in `IisLogParserArcGIS.Data`, wired into `Program.cs` at startup, no aggregate entities yet (those land per-ticket in 06-12).
+
+- **Schema** (`Data/Schema/`): `AggregateTableNames` is the single source of truth for the seven snake_case table names (also used by tests, to keep sqlite_master assertions and future repository SQL from drifting independently). `AggregateDatabaseSchema.EnsureCreated(IDbConnection)` runs one literal (non-interpolated, to sidestep any CA2100 concern) multi-statement `CREATE TABLE IF NOT EXISTS` block for all seven tables in one `Execute` call - Microsoft.Data.Sqlite supports semicolon-separated statements in a single command. Columns/types follow requirements.md's logical schema exactly (`id INTEGER PRIMARY KEY`, `local_date TEXT NOT NULL`, dimension columns `TEXT`, `folder` nullable for folderless services, `time_taken_second REAL`, hit counters `INTEGER`). No CHECK constraints or indexes - normalization/truncation is a Domain-layer concern per aggregate ticket, and no index was asked for here.
+- **Connections** (`Data/Connections/`): `SqliteConnectionFactory.Open(path)` is the sole way this codebase opens a connection to the output database; its static constructor registers a custom `DateOnlyTypeHandler` (Dapper has no built-in `DateOnly` support) so every later repository can bind/read `local_date` as `DateOnly` without each one repeating registration. Deliberately *not* a `[ModuleInitializer]` - that tripped CA2255 ("only intended for application code") since `Data` is a library, not the entry assembly.
+- **Repositories/Queries** (`Data/Repositories/`, `Data/Queries/`): `AggregateRepositoryBase<TRow>` supplies `Insert`/`DeleteByLocalDate`/`GetByLocalDate` against three abstract SQL-text properties each concrete per-aggregate repository (tickets 06-12) will fill in with its own hand-written SQL - this keeps the "no ORM, explicit replace semantics" stance from ADR 0002 while sharing the CRUD method shapes. `AggregateQueryBase` is a thin constructor-only base holding the connection, for non-CRUD/cross-cutting queries to live outside any repository, also per ADR 0002.
+- **Program.cs**: opens a connection to `parsedArguments.OutputDatabasePath` and calls `EnsureCreated` right after startup announcement, before time-zone/file-discovery validation - the ticket asks for schema creation "at startup". `SqliteException` was added to the existing startup catch clause (alongside `FileNotFoundException`/`FormatException`/`IOException`/`UnauthorizedAccessException`) after code review caught that a bad output-database path would otherwise crash with a raw unhandled exception instead of the clean "return 1 + message" behavior every other startup failure path already has.
+- **Data.Tests**: `AggregateDatabaseSchemaTests` (all seven tables created; `EnsureCreated` called twice is a no-op and leaves previously-inserted rows untouched; null-connection guard). `AggregateRepositoryBaseTests` and `AggregateQueryBaseTests` exercise the two base classes via minimal test-only fixtures (a `test_rows` table/row type), proving the `DateOnly` round-trip actually works end-to-end rather than only at compile time. `SqliteConnectionFactoryTests` covers file creation and the null-argument guard. All four test files share one `TestSupport/TempSqliteDatabase` helper (extracted after code review flagged the same ~18-line temp-file-cleanup class copy-pasted across the first draft's test files).
+- `dotnet build` on the full solution: 0 warnings, 0 errors. `dotnet test`: 84 passed (11 Data, 29 Domain, 44 Host). Manually ran the compiled console app twice in a row against the real `2026/` corpus with the same output path (`... ./2026 2026-01-01 <path>.sqlite`) - both runs exited 0, confirming idempotent schema creation end-to-end, not just at the unit-test level.

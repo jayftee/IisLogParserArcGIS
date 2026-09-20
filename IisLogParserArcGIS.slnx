@@ -1,0 +1,15 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/IisLogParserArcGIS.Data/IisLogParserArcGIS.Data.csproj" />
+    <Project Path="src/IisLogParserArcGIS.Domain/IisLogParserArcGIS.Domain.csproj" />
+    <Project Path="src/IisLogParserArcGIS.Reports/IisLogParserArcGIS.Reports.csproj" />
+    <Project Path="src/IisLogParserArcGIS/IisLogParserArcGIS.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IisLogParserArcGIS.Data.Tests/IisLogParserArcGIS.Data.Tests.csproj" />
+    <Project Path="tests/IisLogParserArcGIS.Domain.Tests/IisLogParserArcGIS.Domain.Tests.csproj" />
+    <Project Path="tests/IisLogParserArcGIS.RegressionTests/IisLogParserArcGIS.RegressionTests.csproj" />
+    <Project Path="tests/IisLogParserArcGIS.Reports.Tests/IisLogParserArcGIS.Reports.Tests.csproj" />
+    <Project Path="tests/IisLogParserArcGIS.Tests/IisLogParserArcGIS.Tests.csproj" />
+  </Folder>
+</Solution>

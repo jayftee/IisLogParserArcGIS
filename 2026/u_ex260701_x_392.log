@@ -1,0 +1,6 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-01 18:47:22
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-01 18:47:19 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1257 185.247.137.237
+2026-07-01 18:47:20 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1 64.227.108.146

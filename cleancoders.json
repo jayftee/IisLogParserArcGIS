@@ -1,0 +1,26 @@
+{
+  "ruleParameters": {
+    "naming": {
+      "hungarianPrefixes": ["arr", "bln", "byt", "cur", "dat", "dbl", "err", "int", "lng", "obj", "str", "sng", "udt", "vnt"],
+      "minVariableNameLength": 2,
+      "maxClassNameWords": 25,
+      "maxMethodNameWords": 25
+    },
+    "size": {
+      "maxMethodLines": 50,
+      "maxClassLines": 500,
+      "maxMethodsPerClass": 70,
+      "maxPropertyLines": 30
+    },
+    "structure": {
+      "maxMethodArguments": 3,
+      "maxTrainWreckDepth": 3
+    },
+    "formatting": {
+      "maxLineLength": 200
+    },
+    "comments": {
+      "maxCommentRatioPercent": 3
+    }
+  }
+}

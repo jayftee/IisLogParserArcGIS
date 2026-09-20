@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-19 02:37:16
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-19 02:36:50 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 101 44.201.127.28
+2026-08-19 02:37:50 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1 52.5.223.188
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-19 06:47:02
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-19 06:46:59 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1339 64.225.74.178
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-19 12:00:36
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-19 12:00:33 199.214.108.163 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 1153 71.6.135.131
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-19 14:52:37
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-19 14:52:34 199.214.108.163 GET /portal/home/ - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 200 0 0 4513 193.8.186.29
+2026-08-19 21:53:53 199.214.108.163 GET /robots.txt - 443 - 199.214.109.76 Mozilla/5.0+(compatible;+CensysInspect/1.1;++https://about.censys.io/) - 404 0 2 103 66.132.172.45

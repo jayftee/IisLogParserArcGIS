@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-07 02:28:05
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-07 02:28:00 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 83 13.222.217.64
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-07 05:55:59
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-07 05:55:56 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36+Edg/140.0.0.0 - 404 0 2 1238 65.49.1.198
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-07 07:02:18
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-07 07:02:15 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1096 137.184.13.100
+2026-08-07 07:02:32 199.214.108.162 GET /portal/home - 443 - 199.214.109.74 python-requests/2.31.0 - 302 0 0 2885 45.205.1.132
+2026-08-07 07:02:39 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 137.184.13.100
+2026-08-07 13:26:01 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 88 64.23.214.73
+2026-08-07 17:53:31 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 76 134.209.95.237
+2026-08-07 18:22:48 199.214.108.162 GET /portal - 443 - 199.214.109.78 python-requests/2.31.0 - 302 0 0 18 45.205.1.132
+2026-08-07 18:23:21 199.214.108.162 GET /portal/home - 443 - 199.214.109.78 python-requests/2.31.0 - 302 0 0 31 45.205.1.132
+2026-08-07 23:33:09 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 90 157.245.222.108

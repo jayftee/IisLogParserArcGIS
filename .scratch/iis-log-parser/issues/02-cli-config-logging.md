@@ -1,0 +1,25 @@
+# 02 — CLI args, config binding, and logging
+
+**What to build:** End-to-end, running the compiled program with three positional CLI arguments validates them and initializes configuration-driven logging, so an operator gets clear feedback before any real processing logic exists.
+
+**Blocked by:** 01
+
+**Status:** done
+
+- [x] Program accepts three required positional arguments (log source directory, target local date, output SQLite database path) via the `CommandLineParser` package
+- [x] Missing or malformed arguments produce a clear validation error and a non-zero exit code, without a raw stack trace
+- [x] Local time zone, log output directory, and application log level are bound from `appsettings.json` with the `Development` overlay applied when active
+- [x] Serilog logs to both console and a rolling file under the configured `Logs` directory (10 MB rollover, last 10 files retained)
+- [x] `Microsoft.*` namespaces log at `Error` regardless of environment; application code logs at `Warning` by default and `Debug` under `Development`
+- [x] Every logging-capable class added so far accepts an optional `ILoggerFactory` constructor parameter, defaulting to a null logger when omitted
+- [x] Running with valid arguments produces a startup confirmation log line, visible in both console and the log file
+
+## Comments
+
+Implemented in the console host (`src/IisLogParserArcGIS`), added packages: `CommandLineParser`, `Serilog` + `Serilog.Sinks.Console` + `Serilog.Sinks.File` + `Serilog.Extensions.Logging`, `Microsoft.Extensions.Configuration.Json` + `.Binder` (all resolved to their current net10.0-compatible versions).
+
+- **CLI** (`Cli/`): `ProgramArguments` is the raw `CommandLineParser` positional-argument DTO (`[Value(0..2)]`, all `Required = true`). `CliArgumentValidator.Validate` turns it into a typed `ParsedArguments` (log source directory and output database path resolved via `Path.GetFullPath`, target date parsed strictly as `yyyy-MM-dd`), throwing `CliArgumentValidationException` — caught in `Program.cs` and written to `Console.Error` as just the message, no stack trace — for any malformed value. Missing arguments are handled by `CommandLineParser` itself (`Parser.Default` auto-prints usage/errors); both paths return exit code 1.
+- **Configuration** (`Configuration/`): `AppConfigurationFactory.Build` layers `appsettings.json` (required) with `appsettings.{DOTNET_ENVIRONMENT}.json` (optional overlay); `BindAppSettings` binds `AppSettings` (`LocalTimeZone`, `LogOutputDirectory`, `LogLevel`) and substitutes the documented default (`UTC` / `Logs` / `Warning`) for any blank value. `appsettings.json` now ships real defaults (`UTC` / `Logs` / `Warning`) and `appsettings.Development.json` overlays `LogLevel: Debug` — this is what actually drives the "Warning by default, Debug under Development" requirement, rather than an environment check in code.
+- **Logging** (`Logging/`): `SerilogLoggerFactoryBuilder.Create` builds a Serilog logger (global minimum from config via `LogEventLevelResolver`, `Microsoft` source context pinned to `Error`, console + size-based rolling file sink — 10 MB / 10 retained files, `RollingInterval.Infinite` — under the resolved `LogOutputDirectory`) and wraps it as an `ILoggerFactory` via `Serilog.Extensions.Logging`. `StartupAnnouncer` is the first concrete ADR-0003 logging-capable class (optional `ILoggerFactory`, falls back to `NullLoggerFactory.Instance`); it logs the startup confirmation line at **Warning**, not Information — needed so it's visible under the Warning-default Production threshold, not just under Development's Debug threshold. Verified manually: missing args, a malformed date, and a valid run in both `DOTNET_ENVIRONMENT` unset and `Development`, confirming the confirmation line appears on both console and `Logs/iislogparser.log`.
+- `IisLogParserArcGIS.Tests` gained its first real content (27 tests, all passing) covering `CliArgumentValidator`, `AppConfigurationFactory`, `LogEventLevelResolver`, `SerilogLoggerFactoryBuilder`, and `StartupAnnouncer`; opted the test project out of `GenerateDocumentationFile` (test code has no public API to document, per `Directory.Build.props`'s own documented escape hatch). `Program.cs` itself stays a thin, untested composition root — its wiring is covered by the manual smoke tests above now and will be covered end-to-end by the regression suite in issue 15.
+- Two analyzer calls worth flagging: added a repo-wide `NoWarn` for `CA1848`/`CA1873` (LoggerMessage-delegate perf rules) in `Directory.Build.props`, since ADR 0003's plain-`ILogger<T>`-call pattern is deliberate and this is a once-a-day batch job, not a hot path — this will otherwise refire on every future logging call across all three projects. Locally suppressed `CC0098` (Law-of-Demeter chain length) at the two fluent-builder call sites (`ConfigurationBuilder`, `LoggerConfiguration`) — that's the intended usage of those specific APIs, not incidental deep navigation. `dotnet build` on the full solution: 0 warnings, 0 errors.

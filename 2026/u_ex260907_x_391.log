@@ -1,0 +1,58 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 00:15:50
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 00:15:47 199.214.108.162 GET / - 443 - 199.215.141.182 - - 403 14 0 1389 -
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 02:16:17
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 02:16:14 199.214.108.162 POST /proxy - 443 - 199.214.109.77 Mozilla/5.0+(Linux;+Android+14;+Pixel+8)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/126.0.2785.177+Mobile+Safari/537.36;+compatible;+Claude-SearchBot/1.0;++https://www.anthropic.com/claude-searchbot https://142.229.246.171:443 405 0 1 1160 35.198.217.171
+2026-09-07 02:16:48 199.214.108.162 GET /debug/pprof/cmdline - 443 - 199.214.109.76 Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+AppleWebKit/537.36+(KHTML,+like+Gecko;+compatible;+OAI-SearchBot/1.4;+robots.txt;++https://openai.com/searchbot)+Chrome/131.0.5390.17+Safari/537.36 - 404 0 2 4 35.198.217.171
+2026-09-07 02:16:48 199.214.108.162 GET /proxy/ url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2Fiam%2Fsecurity-credentials%2F 443 - 199.214.109.76 Mozilla/5.0+AppleWebKit/537.36+(KHTML,+like+Gecko;+compatible;+Claude-User/1.0;++Claude-User@anthropic.com) https://142.229.246.171:443/proxy?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2Fiam%2Fsecurity-credentials%2F 200 0 0 1 35.198.217.171
+2026-09-07 02:16:48 199.214.108.162 GET /proxy/ url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F 443 - 199.214.109.75 Mozilla/5.0+AppleWebKit/537.36+(KHTML,+like+Gecko;+compatible;+TelegramBot/1.0) https://142.229.246.171:443/proxy?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F 200 0 0 1 35.198.217.171
+2026-09-07 02:17:43 199.214.108.162 GET /proxy/ - 443 - 199.214.109.74 Mozilla/5.0+(X11;+Ubuntu;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/148.0.1468.228+Safari/537.36;+compatible;+GPTBot/1.4;++https://openai.com/gptbot http://142.229.246.171:80 200 0 0 1 35.198.217.171
+2026-09-07 02:18:01 199.214.108.162 GET /proxy - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:149.11)+Gecko/20100101+Firefox/149.11;+compatible;+meta-externalagent/1.1;++https://developers.facebook.com/docs/sharing/webmasters/crawler http://142.229.246.171:80 301 0 0 1 35.198.217.171
+2026-09-07 02:18:19 199.214.108.162 GET /debug/pprof/cmdline - 443 - 199.214.109.75 Mozilla/5.0+AppleWebKit/537.36+(KHTML,+like+Gecko;+compatible;+Twitterbot/1.0) http://142.229.246.171:80/debug/pprof/cmdline 404 0 2 1 35.198.217.171
+2026-09-07 02:18:26 199.214.108.162 GET /proxy/ url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F 443 - 199.214.109.74 Mozilla/5.0+(compatible;+LinkedInBot/1.0;++http://www.linkedin.com) https://142.229.246.171/proxy?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F 200 0 0 1 35.198.217.171
+2026-09-07 02:18:26 199.214.108.162 GET /proxy/ url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2Fiam%2Fsecurity-credentials%2F 443 - 199.214.109.74 Mozilla/5.0+AppleWebKit/537.36+(KHTML,+like+Gecko;+compatible;+Claude-SearchBot/1.0;++https://www.anthropic.com/claude-searchbot) https://142.229.246.171/proxy?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2Fiam%2Fsecurity-credentials%2F 200 0 0 1 35.198.217.171
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 03:37:01
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 03:36:58 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(X11;+Linux+x86_64;+rv:56.0)+Gecko/20100101+Firefox/56.0 - 404 0 2 1101 184.105.139.70
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 07:59:34
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 07:59:31 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 visionheight.com/scan+Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+Chrome/126.0.0.0+Safari/537.36 - 404 0 2 1282 3.131.220.121
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 10:44:28
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 10:44:24 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1129 143.198.150.150
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 12:14:19
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 12:14:16 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1094 165.227.110.45
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 14:45:53
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 14:45:50 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/83.0.4103.61+Safari/537.36 - 404 0 2 1113 45.79.40.80
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 17:28:37
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 17:28:34 199.214.108.162 POST /proxy - 443 - 199.214.109.77 Mozilla/5.0+AppleWebKit/537.36+(KHTML,+like+Gecko;+compatible;+Claude-User/1.0;++https://www.anthropic.com/claude-user) https://142.229.246.171:443 405 0 1 1348 34.104.149.238
+2026-09-07 17:28:49 199.214.108.162 POST /proxy - 443 - 199.214.109.74 Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10.15;+rv:133.9)+Gecko/20100101+Firefox/133.9;+compatible;+LinkedInBot/1.0;++http://www.linkedin.com https://142.229.246.171:443 405 0 1 1 34.104.149.238
+2026-09-07 17:29:12 199.214.108.162 GET /proxy/ url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F 443 - 199.214.109.75 Mozilla/5.0+(X11;+Ubuntu;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/133.0.3882.41+Safari/537.36;+compatible;+Amzn-SearchBot/1.0;++https://developer.amazon.com/support/amazonbot https://142.229.246.171:443/proxy?url=http%3A%2F%2F169.254.169.254%2Flatest%2Fmeta-data%2F 200 0 0 2 34.104.149.238
+2026-09-07 17:30:06 199.214.108.162 GET /proxy - 443 - 199.214.109.76 Mozilla/5.0+(compatible;+TelegramBot/1.0) http://142.229.246.171:80 301 0 0 1 34.104.149.238
+2026-09-07 17:30:27 199.214.108.162 GET /proxy/ - 443 - 199.214.109.74 Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/133.0.2297.17+Safari/537.36;+compatible;+ChatGPT-User/1.0;++https://openai.com/bot http://142.229.246.171:80 200 0 0 1 34.104.149.238
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-09-07 20:28:28
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-09-07 20:28:25 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1111 139.59.170.85
+2026-09-07 20:28:53 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1 139.59.170.85

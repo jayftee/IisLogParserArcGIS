@@ -1,0 +1,5 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-05-02 09:05:12
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken X-Forwarded-For
+2026-05-02 09:05:09 199.214.108.163 GET / - 443 - 199.213.215.92 - - 403 14 0 1441 18 1549 -

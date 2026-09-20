@@ -1,0 +1,32 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-24 00:06:53
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-24 00:06:49 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 79 86.54.31.46
+2026-06-24 00:29:26 199.214.108.162 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 79 137.184.190.205
+2026-06-24 01:43:44 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 79 165.227.172.206
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-24 08:10:18
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-24 08:10:15 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+6.1;+WOW64;+rv:53.0)+Gecko/20100101+Firefox/53.0 - 404 0 2 1243 8.217.13.226
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-24 08:33:07
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-24 08:33:04 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1092 178.128.32.203
+2026-06-24 08:33:34 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 178.128.32.203
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-24 09:35:31
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-24 09:35:28 199.214.108.162 GET /namaka/rest/services/locator/esmp_canada_locator/GeocodeServer/suggest f=json&text=1512%2012%20AV%20SW%2C%20Calgary%2C%20AB&maxSuggestions=5&category=Point%20Address&token=coOS2SvTIkzajbzQ0lx0ZTN78wV4wpF2kf1VUo9fZ_oLQepGGx1w4OdsDDvf-HtpbzyNz3brWtZ4JeUybRVLJY3FjQ1WKER_Ic9RTGsH5SL5QaizvEtRs0BklXdqvM-ICt4wRiyGtNhwNeY8ZXIk6EM6RO8dl_JjFeKKsDUJXacCxIwXfIpJRDgNzHX_owLG 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/124.0+Safari/537.36 https://landregistry.alberta.ca/ 200 0 0 3874 165.232.145.52
+2026-06-24 09:35:35 199.214.108.162 GET /namaka/rest/services/locator/esmp_canada_locator/GeocodeServer/suggest f=json&text=1512%2012th%20Ave%20SW%2C%20Calgary%2C%20AB%2C%20T3C%200P9%2C%20CAN&maxSuggestions=5&category=Point%20Address&token=coOS2SvTIkzajbzQ0lx0ZTN78wV4wpF2kf1VUo9fZ_oLQepGGx1w4OdsDDvf-HtpbzyNz3brWtZ4JeUybRVLJY3FjQ1WKER_Ic9RTGsH5SL5QaizvEtRs0BklXdqvM-ICt4wRiyGtNhwNeY8ZXIk6EM6RO8dl_JjFeKKsDUJXacCxIwXfIpJRDgNzHX_owLG 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/124.0+Safari/537.36 https://landregistry.alberta.ca/ 304 0 0 53 165.232.145.52
+2026-06-24 09:35:37 199.214.108.162 GET /europa/rest/services/cadastral/arlo_select_polygons/FeatureServer/17/query f=pjson&outFields=LINC&geometry=%7B%22x%22%3A-12701045.834902816%2C%22y%22%3A6628823.233669339%7D&geometryType=esriGeometryPoint&featureEncoding=esriDefault&spatialRel=esriSpatialRelIntersects&token=coOS2SvTIkzajbzQ0lx0ZTN78wV4wpF2kf1VUo9fZ_oLQepGGx1w4OdsDDvf-HtpbzyNz3brWtZ4JeUybRVLJY3FjQ1WKER_Ic9RTGsH5SL5QaizvEtRs0BklXdqvM-ICt4wRiyGtNhwNeY8ZXIk6EM6RO8dl_JjFeKKsDUJXacCxIwXfIpJRDgNzHX_owLG 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/124.0+Safari/537.36 https://landregistry.alberta.ca/ 200 0 0 1985 165.232.145.52
+2026-06-24 09:36:21 199.214.108.162 GET /arcgis/rest/services/Hosted/location_tracking/FeatureServer/ f=json&v=1782293780.064199 443 - 199.214.109.74 ArcGISMaps-Swift/200.8.1+(iOS+26.4;+iPhone13,2)+arcgis-fieldmaps/26.1.2+(D3BBC484-AD75-4DC6-9F02-E1F367AB211D) app://arcgis-maps/com.esri.fieldmaps 200 0 0 1288 96.1.124.163
+2026-06-24 09:36:21 199.214.108.162 POST /arcgis/rest/services/Hosted/location_tracking/FeatureServer/1/applyEdits - 443 - 199.214.109.75 ArcGISMaps-Swift/200.8.1+(iOS+26.4;+iPhone13,2)+arcgis-fieldmaps/26.1.2+(D3BBC484-AD75-4DC6-9F02-E1F367AB211D) app://arcgis-maps/com.esri.fieldmaps 200 0 0 106 96.1.124.163
+2026-06-24 11:30:32 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/133.0.0.0+Safari/537.36 - 404 0 2 76 71.6.134.234
+2026-06-24 12:45:50 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/98.0.4758.102+Safari/537.36 - 404 0 2 77 65.49.1.27
+2026-06-24 18:33:44 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 93 147.182.202.179
+2026-06-24 18:34:11 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 147.182.202.179
+2026-06-24 20:06:39 199.214.108.162 GET /portal/home - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 302 0 0 1114 34.169.247.3

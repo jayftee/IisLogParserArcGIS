@@ -1,0 +1,18 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-18 02:29:44
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-18 02:29:41 199.214.108.163 GET /robots.txt - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1128 34.207.109.220
+2026-08-18 02:36:35 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1 44.203.139.246
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-18 09:48:10
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-18 09:48:07 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/142.0.0.0+Safari/537.36 https://142.229.246.171/ 404 0 2 1260 64.23.128.128
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-18 13:13:40
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-18 13:13:37 199.214.108.163 GET /portal - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+5.1;+rv:9.0.1)+Gecko/20100101+Firefox/9.0.1 - 302 0 0 3080 103.215.75.74
+2026-08-18 13:13:41 199.214.108.163 GET /portal/home/ - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+5.1;+rv:9.0.1)+Gecko/20100101+Firefox/9.0.1 - 200 0 0 85 103.215.75.74
+2026-08-18 18:12:04 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 99 64.225.74.178

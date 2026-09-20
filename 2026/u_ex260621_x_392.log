@@ -1,0 +1,13 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-21 05:45:45
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken X-Forwarded-For
+2026-06-21 05:45:26 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(compatible;+Infrawatch/1.0;++https://infrawat.ch/) - 404 0 2 1441 252 98 193.176.31.229
+2026-06-21 06:04:13 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(X11;+Ubuntu;+Linux+x86_64;+rv:134.0)+Gecko/20100101+Firefox/134.0 - 404 0 2 1441 337 1 91.196.152.245
+2026-06-21 12:44:55 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(X11;+Linux+x86_64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/142.0.0.0+Safari/537.36 https://142.229.246.171/ 404 0 2 1441 729 104 146.190.172.45
+2026-06-21 13:55:23 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1441 146 110 134.209.95.237
+2026-06-21 19:38:46 199.214.108.163 GET /portal - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 302 0 0 225 295 1177 34.11.213.254
+2026-06-21 19:38:46 199.214.108.163 GET /portal/home - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 302 0 0 255 300 86 34.11.213.254
+2026-06-21 19:38:47 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 404 0 2 1441 300 104 34.11.213.254
+2026-06-21 20:45:01 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1441 318 111 147.182.247.10
+2026-06-21 21:36:01 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+6.1;+rv:2.0.1)+Gecko/20100101+Firefox/4.0.1 - 404 0 2 1441 245 109 8.221.138.107

@@ -1,0 +1,5 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-05-05 12:15:15
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken X-Forwarded-For
+2026-05-05 12:15:12 199.214.100.221 GET /favicon.ico - 443 - 10.112.13.233 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/147.0.0.0+Safari/537.36+Edg/147.0.0.0 https://c-goa-web-11043.goa.ds.gov.ab.ca/apps 404 0 2 1253 675 1368 -

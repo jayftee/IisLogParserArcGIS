@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Settings for the coverlet collector, used only by tools/Invoke-CodeCoverage.ps1 (never by a plain dotnet test).
+  Measures the four src/ assemblies; the test projects themselves are excluded. The console host
+  (IisLogParserArcGIS) is deliberately NOT excluded, so how much of it is real logic stays visible.
+  CompilerGeneratedAttribute is deliberately NOT in ExcludeByAttribute: the compiler puts it on the top-level-statements
+  Program class and on async / iterator state machines, so excluding it silently drops Program.cs and every async or
+  iterator method from the report.
+-->
+<RunSettings>
+  <DataCollectionRunSettings>
+    <DataCollectors>
+      <DataCollector friendlyName="XPlat Code Coverage">
+        <Configuration>
+          <Format>cobertura</Format>
+          <Exclude>[*.Tests]*,[*RegressionTests]*</Exclude>
+          <ExcludeByAttribute>GeneratedCodeAttribute,ExcludeFromCodeCoverageAttribute</ExcludeByAttribute>
+          <SkipAutoProps>true</SkipAutoProps>
+        </Configuration>
+      </DataCollector>
+    </DataCollectors>
+  </DataCollectionRunSettings>
+</RunSettings>

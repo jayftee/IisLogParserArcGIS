@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-04 02:32:10
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-04 02:32:07 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1096 134.209.95.237
+2026-07-04 02:32:32 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 134.209.95.237
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-04 03:15:06
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-04 03:15:03 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 1107 157.245.222.108
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-04 06:16:15
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-04 06:16:12 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Macintosh;+Intel+Mac+OS+X+10_15_7)+AppleWebKit/605.1.15+(KHTML,+like+Gecko)+Version/18.6+Safari/605.1.15 - 404 0 2 1293 184.105.139.67
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-04 21:20:17
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-04 21:20:14 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 1094 143.110.239.2
+2026-07-04 21:20:39 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 143.110.239.2

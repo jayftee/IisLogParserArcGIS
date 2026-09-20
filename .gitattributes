@@ -1,0 +1,3 @@
+# The anonymized log corpus is test data: keep every byte exactly as committed on every platform and OS
+# (no line-ending conversion), so line and byte counts never depend on a contributor's git settings.
+/2026/** -text

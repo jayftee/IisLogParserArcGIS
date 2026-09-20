@@ -1,0 +1,18 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-07 00:09:06
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-07 00:08:49 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/120.0.0.0+Safari/537.36 - 404 0 2 96 172.237.101.167
+2026-08-07 02:39:00 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 118 54.165.219.52
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-08-07 07:02:08
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-08-07 07:02:05 199.214.108.163 GET /portal - 443 - 199.214.109.75 python-requests/2.31.0 - 302 0 0 4664 45.205.1.132
+2026-08-07 08:17:54 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 145 157.245.222.108
+2026-08-07 08:18:15 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 157.245.222.108
+2026-08-07 14:15:32 199.214.108.163 GET /portal/home/ - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 200 0 0 86 77.91.118.50
+2026-08-07 17:53:05 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 97 134.209.95.237
+2026-08-07 22:14:33 199.214.108.163 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 108 137.184.13.100
+2026-08-07 22:14:57 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1 137.184.13.100
+2026-08-07 23:32:47 199.214.108.163 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 102 157.245.222.108

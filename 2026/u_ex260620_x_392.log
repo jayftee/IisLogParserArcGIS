@@ -1,0 +1,11 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-20 00:04:17
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status sc-bytes cs-bytes time-taken X-Forwarded-For
+2026-06-20 00:03:49 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1441 316 101 164.92.82.91
+2026-06-20 00:47:03 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1441 273 128 87.236.176.92
+2026-06-20 08:51:53 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1441 146 109 137.184.13.100
+2026-06-20 08:52:17 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1441 318 1 137.184.13.100
+2026-06-20 10:48:50 199.214.108.163 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1441 146 103 164.92.114.247
+2026-06-20 11:20:41 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1441 317 128 164.92.106.15
+2026-06-20 16:14:52 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1441 319 116 165.227.172.206

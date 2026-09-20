@@ -1,0 +1,35 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 00:02:17
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 00:02:14 199.214.108.163 GET / - 443 - 199.215.141.182 - - 403 14 0 1459 -
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 00:35:01
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 00:34:58 199.214.108.163 GET / - 443 - 199.215.141.182 - - 403 14 0 1243 -
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 02:31:43
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 02:31:40 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/136.0.0.0+Safari/537.36 - 404 0 2 1136 3.86.239.220
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 06:38:44
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 06:38:41 199.214.108.163 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1311 143.198.238.87
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 12:50:31
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 12:50:28 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1173 195.96.139.133
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 13:28:49
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 13:28:46 199.214.108.163 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1154 64.23.214.73
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-20 19:39:21
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-20 19:39:18 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1124 134.209.95.237

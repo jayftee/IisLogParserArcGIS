@@ -1,0 +1,22 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-22 01:34:26
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-22 01:34:23 199.214.108.163 GET /robots.txt - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 404 0 2 1129 159.89.122.222
+2026-07-22 01:34:26 199.214.108.163 GET /favicon - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 404 0 2 368 159.89.122.222
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-22 04:55:58
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-22 04:55:55 199.214.108.163 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1292 164.92.106.15
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-22 17:36:23
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-22 17:36:20 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+6.1;+WOW64;+rv:53.0)+Gecko/20100101+Firefox/53.0 - 404 0 2 1131 47.236.183.181
+2026-07-22 17:36:32 199.214.108.163 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(compatible;+MSIE+9.0;+Windows+NT+6.1;+Trident/5.0; - 404 0 2 1 47.84.97.72
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-22 22:50:27
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-22 22:50:24 199.214.108.163 GET /portal/home/ - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/140.0.0.0+Safari/537.36 - 200 0 0 4346 193.8.186.29

@@ -1,0 +1,30 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-26 01:48:52
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-26 01:48:45 199.214.108.162 GET /robots.txt - 443 - 199.214.109.74 - - 404 0 2 69 143.198.238.87
+2026-06-26 02:43:41 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 77 137.184.112.192
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-26 06:29:59
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-26 06:29:56 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/109.0.0.0+Safari/537.36+OPR/95.0.0.0+(Edition+Yx+05) - 404 0 2 1223 65.49.1.137
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-26 08:25:54
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-26 08:25:51 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(compatible;+InternetMeasurement/1.0;++https://internet-measurement.com/) - 404 0 2 1104 162.243.114.171
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-26 10:00:09
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-26 10:00:06 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1106 147.182.202.179
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-06-26 12:09:05
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-06-26 12:09:02 199.214.108.162 GET /portal/home - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 302 0 0 98 35.252.232.125
+2026-06-26 12:09:02 199.214.108.162 GET /portal/home/ - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 200 0 0 19 35.252.232.125
+2026-06-26 12:09:02 199.214.108.162 GET /portal - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64;+rv:109.0)+Gecko/20100101+Firefox/118.0 - 302 0 0 3930 35.252.232.125
+2026-06-26 21:11:03 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 78 178.128.32.203
+2026-06-26 21:11:28 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 178.128.32.203

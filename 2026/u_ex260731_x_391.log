@@ -1,0 +1,41 @@
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 00:00:29
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 00:00:26 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1101 147.182.247.10
+2026-07-31 00:06:41 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 64.23.214.73
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 02:43:55
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 02:43:52 199.214.108.162 GET /robots.txt - 443 - 199.214.109.78 - - 404 0 2 1097 64.225.74.178
+2026-07-31 02:44:17 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.78 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1 64.225.74.178
+2026-07-31 02:49:20 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 0 134.209.95.237
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 11:53:06
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 11:53:03 199.214.108.162 GET /robots.txt - 443 - 199.214.109.76 - - 404 0 2 1238 164.92.106.15
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 14:13:07
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 14:13:04 199.214.108.162 GET /robots.txt - 443 - 199.214.109.77 - - 404 0 2 1110 147.182.202.179
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 15:25:52
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 15:25:49 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.75 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1118 164.92.106.15
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 17:30:47
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 17:30:44 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.77 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 1092 137.184.190.194
+2026-07-31 17:49:34 199.214.108.162 GET /robots.txt - 443 - 199.214.109.75 - - 404 0 2 1 147.182.241.81
+#Software: Microsoft Internet Information Services 10.0
+#Version: 1.0
+#Date: 2026-07-31 22:30:01
+#Fields: date time s-ip cs-method cs-uri-stem cs-uri-query s-port cs-username c-ip cs(User-Agent) cs(Referer) sc-status sc-substatus sc-win32-status time-taken X-Forwarded-For
+2026-07-31 22:29:58 199.214.108.162 GET /portal - 443 - 199.214.109.74 Mozilla/5.0+(Windows+NT+5.1;+rv:9.0.1)+Gecko/20100101+Firefox/9.0.1 - 302 0 0 3872 213.111.148.10
+2026-07-31 22:30:04 199.214.108.162 GET /portal/home/ - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+5.1;+rv:9.0.1)+Gecko/20100101+Firefox/9.0.1 - 200 0 0 113 213.111.148.10
+2026-07-31 22:59:59 199.214.108.162 GET /favicon.ico - 443 - 199.214.109.76 Mozilla/5.0+(Windows+NT+10.0;+Win64;+x64)+AppleWebKit/537.36+(KHTML,+like+Gecko)+Chrome/102.0.5005.63+Safari/537.36 - 404 0 2 84 64.226.86.7
