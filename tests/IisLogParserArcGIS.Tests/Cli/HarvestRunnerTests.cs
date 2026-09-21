@@ -88,6 +88,63 @@ public class HarvestRunnerTests
     }
 
     [Fact]
+    public void Run_OneOfTheDaysFilesIsSkipped_RefusesToReplaceTheDayAndKeepsTheExistingRows()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+        Assert.Equal(0, Harvest(workspace, databasePath));
+        WriteFileWithMissingRequiredFields(workspace, "u_ex260501_x_2.log");
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Refusing to replace 2026-05-01: 1 of 2 log file(s) were skipped", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Equal(2, TotalByUriHits(databasePath));
+    }
+
+    [Fact]
+    public void Run_EveryFileOfTheDayIsSkipped_RefusesToReplaceTheDayInsteadOfWipingIt()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+        Assert.Equal(0, Harvest(workspace, databasePath));
+        WriteFileWithMissingRequiredFields(workspace, "u_ex260501_x_1.log");
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Refusing to replace 2026-05-01: 1 of 1 log file(s) were skipped", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Equal(2, TotalByUriHits(databasePath));
+    }
+
+    [Fact]
+    public void Run_HarvestRegenerate_WhenAFileIsSkipped_ReturnsOneWithoutGeneratingTheDashboard()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        WriteFileWithMissingRequiredFields(workspace, "u_ex260501_x_2.log");
+
+        var exitCode = HarvestAndRegenerate(workspace, workspace.DatabasePath());
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Refusing to replace 2026-05-01", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+    }
+
+    [Fact]
+    public void Run_AFileCannotBeRead_RefusesToReplaceTheDay()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+        var lockedFile = workspace.WriteLogFile("u_ex260501_x_2.log", StandardHeader, "2026-05-01 12:00:00 /c Mozilla/5.0 - 200 10 -");
+        using var exclusiveHandle = new FileStream(lockedFile, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Refusing to replace 2026-05-01: 1 of 2 log file(s) were skipped", workspace.Error.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Run_MalformedDate_ReturnsOneWithTheValidationMessageAndTouchesNothing()
     {
         using var workspace = PrepareWorkspaceWithOneLogFile();
@@ -229,6 +286,14 @@ public class HarvestRunnerTests
             "2026-05-01 12:00:00 /a Mozilla/5.0 - 200 10 -",
             "2026-05-01 13:00:00 /b Mozilla/5.0 - 200 20 -");
         return workspace;
+    }
+
+    private static void WriteFileWithMissingRequiredFields(CliTestWorkspace workspace, string fileName)
+    {
+        workspace.WriteLogFile(
+            fileName,
+            "#Fields: date time cs-uri-stem cs(User-Agent) sc-status time-taken",
+            "2026-05-01 12:00:00 /a Mozilla/5.0 200 10");
     }
 
     private static HarvestArguments Arguments(string logSourceDirectory, string targetLocalDate, string outputDatabasePath)

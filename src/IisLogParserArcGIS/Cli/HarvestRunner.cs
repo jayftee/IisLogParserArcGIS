@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Globalization;
 using IisLogParserArcGIS.Configuration;
 using IisLogParserArcGIS.Data.Connections;
 using IisLogParserArcGIS.Data.Replacement;
@@ -112,6 +113,16 @@ public sealed class HarvestRunner
 
             var logCorpusParser = new LogCorpusParser(loggerFactory);
             var parseResult = logCorpusParser.Parse(discoveredLogFiles, localUtcOffset);
+
+            if (parseResult.SkippedFileCount > 0)
+            {
+                var targetDate = parsedArguments.TargetLocalDate.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                _environment.Error.WriteLine(
+                    $"Refusing to replace {targetDate}: {parseResult.SkippedFileCount} of {discoveredLogFiles.Count} log file(s) were skipped " +
+                    "(unreadable, or missing a required field), so the data would be incomplete. " +
+                    "The existing data for that date was left untouched; see the log for the reason each file was skipped.");
+                return 1;
+            }
 
             var byFieldMapsDevice = ByFieldMapsDeviceAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate, appSettings.PortalWebAdaptorName);
             var bySurvey123Device = BySurvey123DeviceAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate, appSettings.PortalWebAdaptorName);
