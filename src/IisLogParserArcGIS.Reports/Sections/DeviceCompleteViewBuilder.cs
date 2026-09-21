@@ -80,8 +80,8 @@ public static class DeviceCompleteViewBuilder
 
             table.Add(
             [
-                HtmlSafeText(row.Username),
-                HtmlSafeText(row.DeviceId),
+                HtmlSafeTableCell.Create(row.Username),
+                HtmlSafeTableCell.Create(row.DeviceId),
                 row.Hits,
                 Math.Round(row.TotalTimeTakenSecond, 3),
                 Math.Round(averageTimeTakenSecond, 3),
@@ -91,17 +91,5 @@ public static class DeviceCompleteViewBuilder
         }
 
         return GoogleChartsRenderer.RenderTable($"{section.SectionSlug}-complete-view-table", table, TablePaging.Disabled, TableCellContent.Html);
-    }
-
-    /// <summary>
-    /// Builds a cell that displays <paramref name="text"/> literally in a table drawn with <c>allowHtml</c> (which
-    /// would otherwise interpret every string cell as markup), while still sorting on the raw value. A username
-    /// is parsed from a request URI, so it is attacker-influenced. <see langword="null"/> renders as blank.
-    /// </summary>
-    private static Dictionary<string, string> HtmlSafeText(string? text)
-    {
-        var raw = text ?? string.Empty;
-
-        return new Dictionary<string, string> { ["v"] = raw, ["f"] = WebUtility.HtmlEncode(raw) };
     }
 }

@@ -86,10 +86,10 @@ public static class ArcGisServerCompleteViewBuilder
 
             table.Add(
             [
-                row.Site,
-                row.Folder ?? string.Empty,
+                HtmlSafeTableCell.Create(row.Site),
+                HtmlSafeTableCell.Create(row.Folder),
                 serviceNameCell,
-                row.ServiceType,
+                HtmlSafeTableCell.Create(row.ServiceType),
                 row.Hits,
                 Math.Round(row.TotalTimeTakenSecond, 3),
                 Math.Round(averageTimeTakenSecond, 3),

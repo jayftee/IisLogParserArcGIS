@@ -157,6 +157,30 @@ public sealed class ArcGisServerCompleteViewTests
         Assert.Equal($"<a href=\"{quietServiceHref}\">Details</a>", quietServiceRow[9].GetString());
     }
 
+    [Fact]
+    public void Run_CompleteView_EscapesAttackerInfluencedFolderAndServiceType_SoTheyCannotInjectMarkup()
+    {
+        const string FolderMarkup = "<img src=x onerror=alert(1)>";
+        const string ServiceTypeMarkup = "<svg/onload=alert(1)>Server";
+        using var workingCopy = new WorkingDatabaseCopy(_fixture.DatabasePath);
+        workingCopy.InsertArcGisServiceRows(
+            LowServiceRow("xss-service", "titan", _today) with { Folder = FolderMarkup, ServiceType = ServiceTypeMarkup });
+        var settings = CreateSettings();
+
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = workingCopy.OpenConnection();
+
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
+        var row = ExtractTableRows(html).Skip(1).Single(candidate => candidate[2].GetProperty("v").GetString() == "xss-service");
+
+        Assert.Equal("titan", DeviceSectionTestSupport.CellText(row[0]));
+        Assert.Equal(FolderMarkup, DeviceSectionTestSupport.CellText(row[1]));
+        Assert.Equal(ServiceTypeMarkup, DeviceSectionTestSupport.CellText(row[3]));
+        Assert.All([row[0], row[1], row[3]], cell => Assert.DoesNotContain("<", cell.GetProperty("f").GetString(), StringComparison.Ordinal));
+    }
+
 #pragma warning disable CC0042 // Five independent identity components an expected live-endpoint link is built from; a parameter object would just repackage them without benefit.
     private static string ExpectedLiveLink(string baseUrl, string site, string? folder, string serviceName, string serviceType)
 #pragma warning restore CC0042
@@ -182,10 +206,10 @@ public sealed class ArcGisServerCompleteViewTests
     {
         foreach (var row in tableRows)
         {
-            if (row[0].GetString() == site
-                && row[1].GetString() == (folder ?? string.Empty)
+            if (DeviceSectionTestSupport.CellText(row[0]) == site
+                && DeviceSectionTestSupport.CellText(row[1]) == (folder ?? string.Empty)
                 && row[2].GetProperty("v").GetString() == serviceName
-                && row[3].GetString() == serviceType)
+                && DeviceSectionTestSupport.CellText(row[3]) == serviceType)
             {
                 return row;
             }
