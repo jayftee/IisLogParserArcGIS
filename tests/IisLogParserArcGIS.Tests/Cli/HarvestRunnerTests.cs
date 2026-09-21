@@ -1,7 +1,9 @@
 using IisLogParserArcGIS.Cli;
 using IisLogParserArcGIS.Data.Connections;
 using IisLogParserArcGIS.Data.Repositories;
+using IisLogParserArcGIS.Data.Schema;
 using IisLogParserArcGIS.Tests.TestSupport;
+using Microsoft.Data.Sqlite;
 
 namespace IisLogParserArcGIS.Tests.Cli;
 
@@ -50,6 +52,25 @@ public class HarvestRunnerTests
         Assert.StartsWith("Failed to regenerate the Dashboard: Refusing to use", workspace.Error.ToString(), StringComparison.Ordinal);
         Assert.Equal(2, TotalByUriHits(databasePath));
         Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "appsettings.json")));
+    }
+
+    [Fact]
+    public void Run_HarvestRegenerate_WhenTheDashboardOutputIsTheLogSourceDirectory_ReturnsOneAndKeepsTheIisLogs()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = workspace.LogSourceDirectory });
+        var logFile = workspace.WriteLogFile(
+            "u_ex260501_x_1.log",
+            StandardHeader,
+            "2026-05-01 12:00:00 /a Mozilla/5.0 - 200 10 -");
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = HarvestAndRegenerate(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.Contains("it resolves to the log source directory", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.True(File.Exists(logFile));
+        Assert.Equal(1, TotalByUriHits(databasePath));
     }
 
     [Fact]
@@ -107,14 +128,42 @@ public class HarvestRunnerTests
     }
 
     [Fact]
-    public void Run_InvalidConfiguredLocalTimeZone_ReturnsOneWithTheTimeZoneMessage()
+    public void Run_InvalidConfiguredLocalTimeZone_ReturnsOneWithTheTimeZoneMessageAndDoesNotCreateTheDatabase()
     {
         using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["LocalTimeZone"] = "Not/AZone" });
+        var databasePath = workspace.DatabasePath();
 
-        var exitCode = Harvest(workspace, workspace.DatabasePath());
+        var exitCode = Harvest(workspace, databasePath);
 
         Assert.Equal(1, exitCode);
         Assert.StartsWith("Invalid configured local time zone 'Not/AZone': ", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.False(File.Exists(databasePath));
+    }
+
+    [Fact]
+    public void Run_TheDatabaseCannotBeWrittenDuringTheHarvest_ReturnsOneWithTheHarvestFailureMessage()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+        using (var connection = SqliteConnectionFactory.Open(databasePath))
+        {
+            AggregateDatabaseSchema.EnsureCreated(connection);
+            SqliteConnection.ClearPool(connection);
+        }
+
+        File.SetAttributes(databasePath, FileAttributes.ReadOnly);
+        try
+        {
+            var exitCode = Harvest(workspace, databasePath);
+
+            Assert.Equal(1, exitCode);
+            Assert.StartsWith("Failed while harvesting the log files into the output database: ", workspace.Error.ToString(), StringComparison.Ordinal);
+            Assert.DoesNotContain("initialize", workspace.Error.ToString(), StringComparison.Ordinal);
+        }
+        finally
+        {
+            File.SetAttributes(databasePath, FileAttributes.Normal);
+        }
     }
 
     [Fact]

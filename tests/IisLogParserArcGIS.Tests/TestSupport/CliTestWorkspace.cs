@@ -39,6 +39,11 @@ internal sealed class CliTestWorkspace : IDisposable
         return new RunEnvironment(BaseDirectory, environmentName, Error, TimeProvider.System);
     }
 
+    public string CreateDirectoryUnderRoot(string name)
+    {
+        return Directory.CreateDirectory(Path.Combine(_root.FullName, name)).FullName;
+    }
+
     public string DatabasePath(string fileName = "aggregates.sqlite")
     {
         var path = Path.Combine(DataDirectory, fileName);

@@ -20,6 +20,9 @@ namespace IisLogParserArcGIS.Cli;
 /// </summary>
 public sealed class HarvestRunner
 {
+    private const string InitializationFailureMessagePrefix = "Failed to initialize configuration, logging, or the output database";
+    private const string HarvestFailureMessagePrefix = "Failed while harvesting the log files into the output database";
+
     private readonly RunEnvironment _environment;
 
     /// <summary>
@@ -76,6 +79,7 @@ public sealed class HarvestRunner
             return 1;
         }
 
+        var failureMessagePrefix = InitializationFailureMessagePrefix;
         try
         {
             var configuration = AppConfigurationFactory.Build(_environment.BaseDirectory, _environment.EnvironmentName);
@@ -85,9 +89,6 @@ public sealed class HarvestRunner
 
             var startupAnnouncer = new StartupAnnouncer(loggerFactory);
             startupAnnouncer.AnnounceStartup(parsedArguments);
-
-            using var connection = SqliteConnectionFactory.Open(parsedArguments.OutputDatabasePath);
-            AggregateDatabaseSchema.EnsureCreated(connection);
 
             TimeSpan localUtcOffset;
             try
@@ -100,6 +101,10 @@ public sealed class HarvestRunner
                 return 1;
             }
 
+            using var connection = SqliteConnectionFactory.Open(parsedArguments.OutputDatabasePath);
+            AggregateDatabaseSchema.EnsureCreated(connection);
+
+            failureMessagePrefix = HarvestFailureMessagePrefix;
             var stopwatch = Stopwatch.StartNew();
 
             var logFileLocator = new LogFileLocator(loggerFactory);
@@ -137,12 +142,12 @@ public sealed class HarvestRunner
             runSummaryReporter.ReportSurvey123Attribution(DeviceAttributionCounts.Create(bySurvey123Device, persistedSurvey123Rows));
 
             return postHarvestStep == PostHarvestStep.RegenerateDashboard
-                ? new DashboardRegenerator(_environment).Regenerate(connection, configuration)
+                ? new DashboardRegenerator(_environment).Regenerate(connection, configuration, parsedArguments.LogSourceDirectory)
                 : 0;
         }
         catch (Exception ex) when (ex is FileNotFoundException or FormatException or IOException or UnauthorizedAccessException or SqliteException)
         {
-            _environment.Error.WriteLine($"Failed to initialize configuration, logging, or the output database: {ex.Message}");
+            _environment.Error.WriteLine($"{failureMessagePrefix}: {ex.Message}");
             return 1;
         }
         catch (NoLogFilesFoundException ex)

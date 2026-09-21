@@ -27,12 +27,16 @@ public sealed class DashboardRegenerator
     }
 
     /// <summary>
-    /// Regenerates the Dashboard from the aggregate database behind <paramref name="connection"/>.
+    /// Regenerates the Dashboard from the aggregate database behind <paramref name="connection"/>. A Regeneration
+    /// Run deletes its output directory recursively, so the run is refused when that directory is, or contains,
+    /// the executable's own directory, the aggregate database, the log output directory, or
+    /// <paramref name="logSourceDirectory"/>.
     /// </summary>
     /// <param name="connection">An open connection to the aggregate database.</param>
     /// <param name="configuration">The executable's built configuration, the Reports settings are bound from.</param>
+    /// <param name="logSourceDirectory">The IIS log directory of the current Harvest Run, if there is one.</param>
     /// <returns><c>0</c> on success; <c>1</c> after writing the failure message to the error writer.</returns>
-    public int Regenerate(SqliteConnection connection, IConfiguration configuration)
+    public int Regenerate(SqliteConnection connection, IConfiguration configuration, string? logSourceDirectory = null)
     {
         ArgumentNullException.ThrowIfNull(connection);
         ArgumentNullException.ThrowIfNull(configuration);
@@ -40,7 +44,22 @@ public sealed class DashboardRegenerator
         try
         {
             var reportsSettings = ReportsConfigurationFactory.BindReportsSettings(configuration);
-            var reportsOutputDirectory = ResolveReportsOutputDirectory(reportsSettings.OutputDirectory, _environment.BaseDirectory);
+            var logOutputDirectory = AppConfigurationFactory.BindAppSettings(configuration).LogOutputDirectory;
+            var reportsOutputDirectory = RelativePathResolver.Resolve(reportsSettings.OutputDirectory, _environment.BaseDirectory);
+
+            var protectedPaths = new List<ProtectedPath>
+            {
+                new("the executable's own directory", _environment.BaseDirectory),
+                new("the aggregate database", connection.DataSource),
+                new("the log output directory", RelativePathResolver.Resolve(logOutputDirectory, _environment.BaseDirectory)),
+            };
+
+            if (logSourceDirectory is not null)
+            {
+                protectedPaths.Add(new ProtectedPath("the log source directory", logSourceDirectory));
+            }
+
+            EnsureNothingProtectedIsDeleted(reportsOutputDirectory, protectedPaths);
 
             RegenerationRun.Run(connection, reportsSettings, _environment.TimeProvider, reportsOutputDirectory);
             return 0;
@@ -53,19 +72,41 @@ public sealed class DashboardRegenerator
         }
     }
 
-    private static string ResolveReportsOutputDirectory(string outputDirectory, string baseDirectory)
+    private static void EnsureNothingProtectedIsDeleted(string outputDirectory, IEnumerable<ProtectedPath> protectedPaths)
     {
-        var resolved = RelativePathResolver.Resolve(outputDirectory, baseDirectory);
-        var fullResolved = Path.TrimEndingDirectorySeparator(Path.GetFullPath(resolved));
-        var fullBaseDirectory = Path.TrimEndingDirectorySeparator(Path.GetFullPath(baseDirectory));
+        var fullOutputDirectory = Normalize(outputDirectory);
 
-        if (string.Equals(fullResolved, fullBaseDirectory, StringComparison.OrdinalIgnoreCase))
+        foreach (var (description, path) in protectedPaths)
         {
-            throw new ArgumentException(
-                $"Refusing to use '{fullResolved}' as the Dashboard output directory: it resolves to the executable's own directory, which this run would delete recursively.",
-                nameof(outputDirectory));
-        }
+            var fullPath = Normalize(path);
 
-        return resolved;
+            if (string.Equals(fullOutputDirectory, fullPath, StringComparison.OrdinalIgnoreCase))
+            {
+                throw new ArgumentException(
+                    $"Refusing to use '{fullOutputDirectory}' as the Dashboard output directory: it resolves to {description}, which this run would delete recursively.",
+                    nameof(outputDirectory));
+            }
+
+            if (IsInside(fullPath, fullOutputDirectory))
+            {
+                throw new ArgumentException(
+                    $"Refusing to use '{fullOutputDirectory}' as the Dashboard output directory: it contains {description} '{fullPath}', which this run would delete recursively.",
+                    nameof(outputDirectory));
+            }
+        }
     }
+
+    private static string Normalize(string path)
+    {
+        return Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
+    }
+
+    private static bool IsInside(string path, string directory)
+    {
+        var directoryPrefix = Path.EndsInDirectorySeparator(directory) ? directory : directory + Path.DirectorySeparatorChar;
+
+        return path.StartsWith(directoryPrefix, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private sealed record ProtectedPath(string Description, string Path);
 }
