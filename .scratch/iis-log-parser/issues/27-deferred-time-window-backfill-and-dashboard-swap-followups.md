@@ -2,7 +2,7 @@
 
 **What to build:** Four findings from the code review that followed tickets 22-24 that were deliberately **not** fixed in tickets 25/26/29 because each needs a decision from the owner first, or has been accepted. They are recorded here, with the evidence gathered so far, the options, and the concrete tasks each would need, so they can be picked up later without re-deriving anything. None of them blocks day-to-day operation with the shipped configuration (`LocalTimeZone` = `America/Edmonton`) except Part 2, which makes every backfill end with one failed date.
 
-**Blocked by:** none. Parts are independent; suggested order if all are taken: 2, 3, then 1 (only if the time zone is ever set to UTC), 4 only if the accepted trade-off is ever revisited.
+**Blocked by:** none. Parts are independent; suggested order if all are taken: 2, then 1 (only if the time zone is ever set to UTC), 4 only if the accepted trade-off is ever revisited. Part 3 was closed after the owner confirmed the hosting model.
 
 **Status:** deferred (needs an owner decision per part; see each part's "Decision needed").
 
@@ -10,7 +10,7 @@
 |---|---|---|---|---|
 | 1 | Lines stamped just before UTC midnight sit in the *next* day's file; not read when the offset is exactly zero | No (Edmonton is negative) | Small | Deferred (only matters for a UTC config) |
 | 2 | `Invoke-IisLogBackfill.ps1` assumes `LocalTimeZone` = UTC; with Edmonton its last date always fails | **Yes** | Medium | Deferred, recommended first |
-| 3 | `RegenerationRun` deletes the live Dashboard, then rebuilds it in place | Yes (on any failure) | Medium | Deferred |
+| 3 | `RegenerationRun` deletes its output directory, then rebuilds it in place | No: the output goes to a temporary location and is deployed only on success | None | **Closed: not needed** (owner-confirmed hosting, see Part 3) |
 | 4 | One fixed UTC offset per harvest day mis-buckets an hour on the two DST days a year | Yes, twice a year | Medium | **Accepted, no work planned** |
 
 ## Corrections to what the review reported
@@ -92,9 +92,23 @@ The script (`src/IisLogParserArcGIS/Scripts/Invoke-IisLogBackfill.ps1`) lists th
 
 ---
 
-## Part 3 — The Dashboard rebuild is not atomic
+## Part 3 — The Dashboard rebuild is not atomic (closed: the hosting model already makes this safe)
 
-### Problem
+### Resolution
+
+Owner-confirmed: the Dashboard is written to a **temporary location**, and only if generation succeeds is it **deployed** to where it is served. The live site is therefore never the directory `RegenerationRun` deletes and rebuilds, so a failed or half-finished run cannot break what viewers see, and no build-beside-then-swap change is needed in this program. The analysis below is kept for the record; its options A-C and tasks are **not** to be done.
+
+What this leaves is a dependency, not a task for this repo's code: the deploy step must only run when the exit code is `0`. The program already behaves that way:
+
+- Every handled Dashboard failure exits `1` (`DashboardRegenerator`: guard refusals, bad time zone, I/O and SQLite errors), and an unhandled exception ends the process with a non-zero code as well.
+- `harvest-regenerate` exits `1` *before* generating anything when the harvest cannot be trusted: skipped log files (ticket 25), an invalid time zone or unwritable database (ticket 24). So a deploy gated on the exit code never publishes a Dashboard built from a partial day.
+- A stale partial tree from a failed run is wiped and recreated by the next run (`RegenerationRun` always starts from an empty output directory), so it cannot leak into a later successful deployment.
+
+Optional, only if the deploy step is ever found to be deploying after a failure: document the contract ("`0` means the output directory is complete; anything else means do not deploy") in the README's verb table, and/or have `RegenerationRun` write a completion marker file as its last step so the deployer can check for it. Neither is needed while the deploy step is gated on the exit code.
+
+### Original analysis (kept for the record)
+
+#### Problem
 
 `RegenerationRun.Run` (`src/IisLogParserArcGIS.Reports/RegenerationRun.cs`, around lines 47-52) does `Directory.Delete(outputDirectory, recursive: true)`, `Directory.CreateDirectory(...)`, and then every section builder writes its pages straight into that directory. Failure modes:
 
@@ -105,13 +119,13 @@ The script (`src/IisLogParserArcGIS/Scripts/Invoke-IisLogBackfill.ps1`) lists th
 
 Hosting is the owner's own infrastructure (reports ticket 07: "opened from a plain shared folder or served by an IIS site"), so what a swap may do to the output directory is unknown here: renaming a directory that IIS uses as a site/virtual-directory root, or that has open handles, can fail.
 
-### Options
+#### Options
 
 - **A - build beside, then swap (recommended, if the hosting allows).** Build into a sibling `<output>.building` (same volume), then rename the current directory to `<output>.previous`, rename `.building` to `<output>`, delete `.previous`. Any failure before the swap leaves the live Dashboard untouched; a failure during the swap can be rolled back by renaming `.previous` back.
 - **B - build beside, then mirror into the live directory.** Never remove the live directory: copy new/changed files over it and delete stale files afterwards. Works when the directory is a mount point, a UNC share or an IIS site root that cannot be renamed; the live tree is briefly a mix of old and new pages, but never empty, and a build failure leaves it fully old.
 - **C - keep in-place rebuild, add a backup.** Copy the live directory aside first and restore on failure. Simplest, but a long window without a Dashboard remains.
 
-### Tasks
+#### Tasks (not to be done)
 
 1. Establish the hosting facts: is the output directory an IIS site physical path, a virtual directory, or a UNC share? Can the account create siblings next to it and rename it? Measure `harvest-regenerate` / `regenerate` duration on a production-size database.
 2. Decide A, B or A-with-B-fallback (try the rename, fall back to mirroring on `IOException`/`UnauthorizedAccessException`).
@@ -120,7 +134,7 @@ Hosting is the owner's own infrastructure (reports ticket 07: "opened from a pla
 5. Tests in `RegenerationRunTests` and `DashboardRegeneratorTests`: a builder failure (inject via a corrupt/locked input or a read-only target) leaves the previous Dashboard byte-for-byte intact; a successful run replaces it; a stale `.building`/`.previous` is cleaned; a failed swap is rolled back; pages that no longer exist do not survive a successful run.
 6. Update the README ("regeneration is a full rebuild") and ADR 0005's consequences if the "replaced outright" wording changes.
 
-### Decision needed
+#### Decision needed (answered above)
 
 Hosting facts (task 1) and A vs. B. If the Dashboard is only consumed by people opening it during business hours and a failed run is rare, the whole part can stay deferred.
 
@@ -152,7 +166,7 @@ This is a holding issue. A part is complete when its own tasks are done and:
 
 - [ ] Part 1: decision recorded (applies or closes as "not applicable"); if it applies, tasks 1-5 done and the zero-offset tests green.
 - [ ] Part 2: decision recorded; a healthy Edmonton backfill of a full folder exits `0`, reports the edge dates as incomplete rather than failed, and a missing middle file is still a failure.
-- [ ] Part 3: hosting facts recorded; a failed regeneration leaves the previous Dashboard intact.
+- [x] Part 3: closed - the output is written to a temporary location and deployed only on success, so no change is needed; the deploy step must stay gated on a `0` exit code.
 - [ ] Part 4: nothing to do unless revisited.
 - [ ] Every part that ships builds with 0 warnings and passes Domain, Host, Data, Regression and Reports suites, and updates the README/ADRs it touches.
 
@@ -163,4 +177,6 @@ This is a holding issue. A part is complete when its own tasks are done and:
 
 ## Comments
 
-Written after the review that followed tickets 22-24. Evidence gathered while writing it: the corpus statistics in Part 1 (an awk pass comparing each data line's date with the date in its file name, over all 720 files); the ticket-17 and script-header wording quoted in Part 2; the hosting answer of reports ticket 07 for Part 3. Not gathered: any production timing for regeneration, the production hosting setup, and a full-day production log for Part 1 task 1.
+Written after the review that followed tickets 22-24. Evidence gathered while writing it: the corpus statistics in Part 1 (an awk pass comparing each data line's date with the date in its file name, over all 720 files); the ticket-17 and script-header wording quoted in Part 2; the hosting answer of reports ticket 07 for Part 3. Not gathered: a full-day production log for Part 1 task 1.
+
+Update (owner): Part 3 hosting confirmed - the Dashboard is generated into a temporary location and deployed only if generation succeeds. Part 3 is closed; the swap options and tasks are kept only as a record. The one residual dependency is that the deploy step is gated on the exit code, which the runners already guarantee (ticket 24, 25 and 23 behaviors).
