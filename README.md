@@ -268,7 +268,7 @@ graph TB
 ```mermaid
 sequenceDiagram
     participant User as Operator / Task Scheduler
-    participant Program as Program.cs
+    participant Program as HarvestRunner (dispatched from Program.cs)
     participant Cli as CliArgumentValidator
     participant Cfg as AppConfigurationFactory
     participant Locator as LogFileLocator
@@ -659,7 +659,7 @@ graph TB
 
 - **Optional `ILoggerFactory`, null-object fallback** ([ADR 0003](docs/adr/0003-optional-loggerfactory-with-null-fallback.md)): every logging-capable class in Host, Domain, and Data takes an `ILoggerFactory? loggerFactory = null` constructor parameter and falls back to `NullLoggerFactory.Instance`. Every log call site is unconditionally safe, and any class can be constructed in a unit test with zero logging setup. Reports doesn't participate — it has no logging-capable classes of its own; a Regeneration Run's own failures surface through `Program.cs`'s existing exception handling instead.
 - **Correlation IDs**: while processing a raw line, `{filename}:{line-number}` is pushed into Serilog's log context, so any warning/error traces straight back to the source line that caused it.
-- **Fail loudly**: zero log files found for the required date(s) is a hard failure — clear stderr message, exit code 1 ([`NoLogFilesFoundException`](src/IisLogParserArcGIS/FileDiscovery/NoLogFilesFoundException.cs)). Same treatment for CLI validation errors and configuration/database initialization failures — see the `catch` clauses in [`Program.cs`](src/IisLogParserArcGIS/Program.cs).
+- **Fail loudly**: zero log files found for the required date(s) is a hard failure — clear stderr message, exit code 1 ([`NoLogFilesFoundException`](src/IisLogParserArcGIS/FileDiscovery/NoLogFilesFoundException.cs)). Same treatment for CLI validation errors and configuration/database initialization failures — see the `catch` clauses in [`HarvestRunner.cs`](src/IisLogParserArcGIS/Cli/HarvestRunner.cs), [`RegenerateRunner.cs`](src/IisLogParserArcGIS/Cli/RegenerateRunner.cs) and [`DashboardRegenerator.cs`](src/IisLogParserArcGIS/Cli/DashboardRegenerator.cs).
 
 ## Testing strategy
 
@@ -708,7 +708,8 @@ dotnet test tests/IisLogParserArcGIS.RegressionTests                    # uses t
 | The atomic daily replace | [`DailyAggregateReplacer.cs`](src/IisLogParserArcGIS.Data/Replacement/DailyAggregateReplacer.cs) |
 | Logging setup / rolling file | [`SerilogLoggerFactoryBuilder.cs`](src/IisLogParserArcGIS/Logging/SerilogLoggerFactoryBuilder.cs) |
 | The end-of-run summary | [`RunSummaryReporter.cs`](src/IisLogParserArcGIS/Logging/RunSummaryReporter.cs) |
-| Orchestration / wiring | [`Program.cs`](src/IisLogParserArcGIS/Program.cs) |
+| Verb parsing and dispatch | [`Program.cs`](src/IisLogParserArcGIS/Program.cs) |
+| Orchestration of a verb (exit codes, error messages) | [`HarvestRunner.cs`](src/IisLogParserArcGIS/Cli/HarvestRunner.cs), [`RegenerateRunner.cs`](src/IisLogParserArcGIS/Cli/RegenerateRunner.cs), [`DashboardRegenerator.cs`](src/IisLogParserArcGIS/Cli/DashboardRegenerator.cs) |
 | Dashboard generation entry point | [`RegenerationRun.cs`](src/IisLogParserArcGIS.Reports/RegenerationRun.cs) |
 | A specific Dashboard area's content/queries | `src/IisLogParserArcGIS.Reports/Sections/*SectionBuilder.cs`, `*CompleteViewBuilder.cs`, `*DetailPageBuilder.cs` (one builder per area) |
 | Chart HTML/JS (LineChart, AnnotatedTimeLine, BarChart, Table) | [`GoogleChartsRenderer.cs`](src/IisLogParserArcGIS.Reports/Rendering/GoogleChartsRenderer.cs) |

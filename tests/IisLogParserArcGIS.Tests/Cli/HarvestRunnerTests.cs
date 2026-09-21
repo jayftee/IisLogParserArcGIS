@@ -1,0 +1,210 @@
+using IisLogParserArcGIS.Cli;
+using IisLogParserArcGIS.Data.Connections;
+using IisLogParserArcGIS.Data.Repositories;
+using IisLogParserArcGIS.Tests.TestSupport;
+
+namespace IisLogParserArcGIS.Tests.Cli;
+
+public class HarvestRunnerTests
+{
+    private const string TargetDate = "2026-05-01";
+    private const string StandardHeader = "#Fields: date time cs-uri-stem cs(User-Agent) cs(Referer) sc-status time-taken X-Forwarded-For";
+
+    [Fact]
+    public void Run_Harvest_PersistsTheDaysAggregatesAndDoesNotGenerateTheDashboard()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(string.Empty, workspace.Error.ToString());
+        Assert.Equal(2, TotalByUriHits(databasePath));
+        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+    }
+
+    [Fact]
+    public void Run_HarvestRegenerate_PersistsTheDaysAggregatesAndGeneratesTheDashboard()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = HarvestAndRegenerate(workspace, databasePath);
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(string.Empty, workspace.Error.ToString());
+        Assert.Equal(2, TotalByUriHits(databasePath));
+        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard", "index.html")));
+    }
+
+    [Fact]
+    public void Run_HarvestRegenerate_WhenTheDashboardOutputIsRefused_ReturnsOneButKeepsTheHarvestedRows()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["OutputDirectory"] = "." });
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = HarvestAndRegenerate(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Failed to regenerate the Dashboard: Refusing to use", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Equal(2, TotalByUriHits(databasePath));
+        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "appsettings.json")));
+    }
+
+    [Fact]
+    public void Run_TheSameDateTwice_ReplacesTheDaysRowsInsteadOfDoublingThem()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+
+        var firstExitCode = Harvest(workspace, databasePath);
+        var secondExitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(0, firstExitCode);
+        Assert.Equal(0, secondExitCode);
+        Assert.Equal(2, TotalByUriHits(databasePath));
+    }
+
+    [Fact]
+    public void Run_MalformedDate_ReturnsOneWithTheValidationMessageAndTouchesNothing()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = new HarvestRunner(workspace.Environment()).Harvest(Arguments(workspace.LogSourceDirectory, "not-a-date", databasePath));
+
+        Assert.Equal(1, exitCode);
+        Assert.Equal($"The target local date 'not-a-date' is not valid. Expected format: yyyy-MM-dd.{Environment.NewLine}", workspace.Error.ToString());
+        Assert.False(File.Exists(databasePath));
+        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Logs")));
+    }
+
+    [Fact]
+    public void Run_EmptyLogSourceDirectory_ReturnsOneWithTheValidationMessage()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+
+        var exitCode = new HarvestRunner(workspace.Environment()).Harvest(Arguments(string.Empty, TargetDate, workspace.DatabasePath()));
+
+        Assert.Equal(1, exitCode);
+        Assert.Equal($"The log source directory must not be empty.{Environment.NewLine}", workspace.Error.ToString());
+    }
+
+    [Fact]
+    public void Run_NoLogFilesForTheTargetDate_ReturnsOneWithTheNoLogFilesMessage()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.Equal(
+            $"No log files found in '{workspace.LogSourceDirectory}' for UTC date(s) 260501 (local date 2026-05-01).{Environment.NewLine}",
+            workspace.Error.ToString());
+    }
+
+    [Fact]
+    public void Run_InvalidConfiguredLocalTimeZone_ReturnsOneWithTheTimeZoneMessage()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["LocalTimeZone"] = "Not/AZone" });
+
+        var exitCode = Harvest(workspace, workspace.DatabasePath());
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Invalid configured local time zone 'Not/AZone': ", workspace.Error.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Run_OutputDatabaseInAMissingDirectory_ReturnsOneWithTheInitializationMessage()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = Path.Combine(workspace.DataDirectory, "no-such-directory", "aggregates.sqlite");
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Failed to initialize configuration, logging, or the output database: ", workspace.Error.ToString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Run_MissingAppSettings_ReturnsOneWithTheInitializationMessage()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteLogFile("u_ex260501_x_1.log", StandardHeader, "2026-05-01 12:00:00 /a Mozilla/5.0 - 200 10 -");
+
+        var exitCode = Harvest(workspace, workspace.DatabasePath());
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Failed to initialize configuration, logging, or the output database: ", workspace.Error.ToString(), StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [InlineData("Development", "DevLogs")]
+    [InlineData("Production", "Logs")]
+    public void Run_UsesTheAppSettingsOverlayOfTheEnvironmentName(string environmentName, string expectedLogDirectory)
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        workspace.WriteOverlay("Development", new Dictionary<string, object?> { ["LogOutputDirectory"] = "DevLogs" });
+
+        var exitCode = new HarvestRunner(workspace.Environment(environmentName)).Harvest(
+            Arguments(workspace.LogSourceDirectory, TargetDate, workspace.DatabasePath()));
+
+        Assert.Equal(0, exitCode);
+        var otherLogDirectory = expectedLogDirectory == "Logs" ? "DevLogs" : "Logs";
+        Assert.True(Directory.Exists(Path.Combine(workspace.BaseDirectory, expectedLogDirectory)));
+        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, otherLogDirectory)));
+    }
+
+    [Fact]
+    public void Run_WritesTheRunLogUnderTheConfiguredLogDirectoryOfTheBaseDirectory()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+
+        var exitCode = Harvest(workspace, workspace.DatabasePath());
+
+        Assert.Equal(0, exitCode);
+        var logFile = Directory.GetFiles(Path.Combine(workspace.BaseDirectory, "Logs"), "iislogparser*.log").Single();
+        Assert.NotEqual(string.Empty, File.ReadAllText(logFile));
+    }
+
+    private static CliTestWorkspace PrepareWorkspaceWithOneLogFile(IReadOnlyDictionary<string, object?>? appSettingsOverrides = null)
+    {
+        var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings(appSettingsOverrides);
+        workspace.WriteLogFile(
+            "u_ex260501_x_1.log",
+            StandardHeader,
+            "2026-05-01 12:00:00 /a Mozilla/5.0 - 200 10 -",
+            "2026-05-01 13:00:00 /b Mozilla/5.0 - 200 20 -");
+        return workspace;
+    }
+
+    private static HarvestArguments Arguments(string logSourceDirectory, string targetLocalDate, string outputDatabasePath)
+    {
+        return new HarvestArguments
+        {
+            LogSourceDirectory = logSourceDirectory,
+            TargetLocalDate = targetLocalDate,
+            OutputDatabasePath = outputDatabasePath,
+        };
+    }
+
+    private static int Harvest(CliTestWorkspace workspace, string databasePath)
+    {
+        return new HarvestRunner(workspace.Environment()).Harvest(Arguments(workspace.LogSourceDirectory, TargetDate, databasePath));
+    }
+
+    private static int HarvestAndRegenerate(CliTestWorkspace workspace, string databasePath)
+    {
+        return new HarvestRunner(workspace.Environment()).HarvestAndRegenerate(Arguments(workspace.LogSourceDirectory, TargetDate, databasePath));
+    }
+
+    private static int TotalByUriHits(string databasePath)
+    {
+        using var connection = SqliteConnectionFactory.Open(databasePath);
+        return new ByUriRepository().GetByLocalDate(connection, new DateOnly(2026, 5, 1)).Sum(row => row.Hits);
+    }
+}
