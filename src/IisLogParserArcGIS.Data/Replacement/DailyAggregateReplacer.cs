@@ -44,7 +44,12 @@ public static class DailyAggregateReplacer
             ReplaceTable(new ByUserAgentRepository(), batch.ByUserAgent);
             ReplaceTable(new ByRefererRepository(), batch.ByReferer);
             ReplaceTable(new ByForwardedForIpRepository(), batch.ByForwardedForIp);
-            ReplaceTable(new ByRefererAndUriRepository(), batch.ByRefererAndUri);
+
+            if (batch.ByRefererAndUri is not null)
+            {
+                ReplaceTable(new ByRefererAndUriRepository(), batch.ByRefererAndUri);
+            }
+
             ReplaceTable(new ByArcGisServiceRepository(), batch.ByArcGisService);
             ReplaceTable(new ByPortalItemRepository(), batch.ByPortalItem);
             ReplaceTable(new ByFieldMapsDeviceRepository(), batch.ByFieldMapsDevice);

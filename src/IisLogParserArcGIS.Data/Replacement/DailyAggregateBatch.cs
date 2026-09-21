@@ -39,9 +39,12 @@ public sealed record DailyAggregateBatch
     public required IEnumerable<ByForwardedForIpAggregateRow> ByForwardedForIp { get; init; }
 
     /// <summary>
-    /// Gets the by-referer-and-URI aggregate rows.
+    /// Gets the by-referer-and-URI aggregate rows, or <see langword="null"/> when this batch did not compute that
+    /// aggregate (ticket 28) - in which case the replacer leaves the table, including any rows already stored for
+    /// this Local Date, untouched. An empty collection is different: the table's rows for this Local Date are
+    /// still replaced, with nothing.
     /// </summary>
-    public required IEnumerable<ByRefererAndUriAggregateRow> ByRefererAndUri { get; init; }
+    public required IEnumerable<ByRefererAndUriAggregateRow>? ByRefererAndUri { get; init; }
 
     /// <summary>
     /// Gets the by-ArcGIS-Server-service aggregate rows.

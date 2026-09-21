@@ -43,6 +43,16 @@ public sealed class RunSummaryReporter
     }
 
     /// <summary>
+    /// Logs that the by-referer-and-URI aggregate was not computed because <c>ComputeByRefererAndUri</c> is off, at
+    /// <see cref="LogLevel.Warning"/> like the rest of the run summary, so an empty table is explainable from the
+    /// log file even at the default minimum level.
+    /// </summary>
+    public void ReportByRefererAndUriSkipped()
+    {
+        _logger.LogWarning("By-referer-and-URI aggregate not computed: ComputeByRefererAndUri is off, so that table was left untouched.");
+    }
+
+    /// <summary>
     /// Logs how the harvested date's Field Maps devices were attributed to a username at
     /// <see cref="LogLevel.Warning"/>, so the (often large) unattributed share is visible rather than silent.
     /// </summary>

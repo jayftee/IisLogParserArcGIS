@@ -126,6 +126,9 @@ public sealed class HarvestRunner
 
             var byFieldMapsDevice = ByFieldMapsDeviceAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate, appSettings.PortalWebAdaptorName);
             var bySurvey123Device = BySurvey123DeviceAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate, appSettings.PortalWebAdaptorName);
+            var byRefererAndUri = appSettings.ComputeByRefererAndUri
+                ? ByRefererAndUriAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate)
+                : null;
             var dailyAggregateBatch = new DailyAggregateBatch
             {
                 LocalDate = parsedArguments.TargetLocalDate,
@@ -134,7 +137,7 @@ public sealed class HarvestRunner
                 ByUserAgent = ByUserAgentAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate),
                 ByReferer = ByRefererAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate),
                 ByForwardedForIp = ByForwardedForIpAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate),
-                ByRefererAndUri = ByRefererAndUriAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate),
+                ByRefererAndUri = byRefererAndUri,
                 ByArcGisService = ByArcGisServiceAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate),
                 ByPortalItem = ByPortalItemAggregator.Aggregate(parseResult.Requests, parsedArguments.TargetLocalDate, appSettings.PortalWebAdaptorName),
                 ByFieldMapsDevice = byFieldMapsDevice,
@@ -147,6 +150,12 @@ public sealed class HarvestRunner
 
             var runSummaryReporter = new RunSummaryReporter(loggerFactory);
             runSummaryReporter.Report(parseResult.Counts, stopwatch.Elapsed);
+
+            if (byRefererAndUri is null)
+            {
+                runSummaryReporter.ReportByRefererAndUriSkipped();
+            }
+
             var persistedFieldMapsRows = new ByFieldMapsDeviceRepository().GetByLocalDate(connection, parsedArguments.TargetLocalDate).ToArray();
             runSummaryReporter.ReportFieldMapsAttribution(DeviceAttributionCounts.Create(byFieldMapsDevice, persistedFieldMapsRows));
             var persistedSurvey123Rows = new BySurvey123DeviceRepository().GetByLocalDate(connection, parsedArguments.TargetLocalDate).ToArray();

@@ -27,6 +27,57 @@ public class HarvestRunnerTests
     }
 
     [Fact]
+    public void Run_WithComputeByRefererAndUriDisabled_LeavesThatTableEmptyButPopulatesTheOthers()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["ComputeByRefererAndUri"] = false });
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(0, ByRefererAndUriRowCount(databasePath));
+        Assert.Equal(2, TotalByUriHits(databasePath));
+    }
+
+    [Fact]
+    public void Run_WithoutTheComputeByRefererAndUriKey_BehavesAsDisabled()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile();
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(0, ByRefererAndUriRowCount(databasePath));
+    }
+
+    [Fact]
+    public void Run_WithComputeByRefererAndUriEnabled_PersistsTheByRefererAndUriRows()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["ComputeByRefererAndUri"] = true });
+        var databasePath = workspace.DatabasePath();
+
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(2, ByRefererAndUriRowCount(databasePath));
+    }
+
+    [Fact]
+    public void Run_TurningComputeByRefererAndUriOffAfterItWasOn_LeavesTheEarlierRowsInPlace()
+    {
+        using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["ComputeByRefererAndUri"] = true });
+        var databasePath = workspace.DatabasePath();
+        Assert.Equal(0, Harvest(workspace, databasePath));
+
+        workspace.WriteAppSettings(new Dictionary<string, object?> { ["ComputeByRefererAndUri"] = false });
+        var exitCode = Harvest(workspace, databasePath);
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(2, ByRefererAndUriRowCount(databasePath));
+    }
+
+    [Fact]
     public void Run_HarvestRegenerate_PersistsTheDaysAggregatesAndGeneratesTheDashboard()
     {
         using var workspace = PrepareWorkspaceWithOneLogFile();
@@ -314,6 +365,12 @@ public class HarvestRunnerTests
     private static int HarvestAndRegenerate(CliTestWorkspace workspace, string databasePath)
     {
         return new HarvestRunner(workspace.Environment()).HarvestAndRegenerate(Arguments(workspace.LogSourceDirectory, TargetDate, databasePath));
+    }
+
+    private static int ByRefererAndUriRowCount(string databasePath)
+    {
+        using var connection = SqliteConnectionFactory.Open(databasePath);
+        return new ByRefererAndUriRepository().GetByLocalDate(connection, new DateOnly(2026, 5, 1)).Count();
     }
 
     private static int TotalByUriHits(string databasePath)

@@ -35,6 +35,47 @@ public class DailyAggregateReplacerTests
     }
 
     [Fact]
+    public void Replace_WithANullByRefererAndUri_LeavesThatTablesExistingRowsUntouchedAndStillReplacesEveryOtherTable()
+    {
+        using var database = new TempSqliteDatabase();
+        using var connection = SqliteConnectionFactory.Open(database.Path);
+        AggregateDatabaseSchema.EnsureCreated(connection);
+        DailyAggregateReplacer.Replace(connection, BuildBatch(_targetDate, "first-run"));
+
+        DailyAggregateReplacer.Replace(connection, BuildBatch(_targetDate, "second-run") with { ByRefererAndUri = null });
+
+        var byRefererAndUriRow = Assert.Single(new ByRefererAndUriRepository().GetByLocalDate(connection, _targetDate));
+        Assert.Equal("/first-run", byRefererAndUriRow.UriStem);
+        Assert.Equal("/second-run", Assert.Single(new ByUriRepository().GetByLocalDate(connection, _targetDate)).UriStem);
+    }
+
+    [Fact]
+    public void Replace_WithANullByRefererAndUriOnAFreshDatabase_LeavesThatTableEmpty()
+    {
+        using var database = new TempSqliteDatabase();
+        using var connection = SqliteConnectionFactory.Open(database.Path);
+        AggregateDatabaseSchema.EnsureCreated(connection);
+
+        DailyAggregateReplacer.Replace(connection, BuildBatch(_targetDate, "only-run") with { ByRefererAndUri = null });
+
+        Assert.Empty(new ByRefererAndUriRepository().GetByLocalDate(connection, _targetDate));
+        Assert.Single(new ByUriRepository().GetByLocalDate(connection, _targetDate));
+    }
+
+    [Fact]
+    public void Replace_WithAnEmptyByRefererAndUri_StillReplacesThatTableWithNothing()
+    {
+        using var database = new TempSqliteDatabase();
+        using var connection = SqliteConnectionFactory.Open(database.Path);
+        AggregateDatabaseSchema.EnsureCreated(connection);
+        DailyAggregateReplacer.Replace(connection, BuildBatch(_targetDate, "first-run"));
+
+        DailyAggregateReplacer.Replace(connection, BuildBatch(_targetDate, "second-run") with { ByRefererAndUri = [] });
+
+        Assert.Empty(new ByRefererAndUriRepository().GetByLocalDate(connection, _targetDate));
+    }
+
+    [Fact]
     public void Replace_CalledTwiceForTheSameDate_LeavesExactlyOneBatchPerTable()
     {
         using var database = new TempSqliteDatabase();

@@ -264,6 +264,8 @@ Source entity: `AggregatedByForwardedForIp`
 
 Source entity: `AggregatedByRefererAndUri`
 
+**Optional (ticket 28):** this aggregate is computed only when the `ComputeByRefererAndUri` setting is `true` (default `false`). The table is always created, but with the setting off a harvest neither writes to it nor deletes rows an earlier run stored.
+
 ### Parsing logic
 
 - Read `cs(Referer)` and `cs-uri-stem` from the IIS log line.

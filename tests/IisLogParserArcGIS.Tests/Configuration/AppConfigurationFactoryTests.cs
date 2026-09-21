@@ -49,6 +49,48 @@ public class AppConfigurationFactoryTests
     }
 
     [Fact]
+    public void BindAppSettings_WithoutComputeByRefererAndUri_DefaultsToFalse()
+    {
+        var configuration = new ConfigurationBuilder().AddInMemoryCollection(new Dictionary<string, string?>()).Build();
+
+        var settings = AppConfigurationFactory.BindAppSettings(configuration);
+
+        Assert.False(settings.ComputeByRefererAndUri);
+    }
+
+    [Fact]
+    public void BindAppSettings_WithComputeByRefererAndUriTrue_BindsIt()
+    {
+        var configuration = new ConfigurationBuilder()
+            .AddInMemoryCollection(new Dictionary<string, string?> { ["ComputeByRefererAndUri"] = "true" })
+            .Build();
+
+        var settings = AppConfigurationFactory.BindAppSettings(configuration);
+
+        Assert.True(settings.ComputeByRefererAndUri);
+    }
+
+    [Fact]
+    public void Build_LetsAPrefixedEnvironmentVariableTurnComputeByRefererAndUriOn()
+    {
+        var directory = Directory.CreateTempSubdirectory("iislogparser-config-tests-");
+        try
+        {
+            File.WriteAllText(Path.Combine(directory.FullName, "appsettings.json"), "{ \"ComputeByRefererAndUri\": false }");
+            Environment.SetEnvironmentVariable("IISLOGPARSER_ComputeByRefererAndUri", "true");
+
+            var settings = AppConfigurationFactory.BindAppSettings(AppConfigurationFactory.Build(directory.FullName, "Production"));
+
+            Assert.True(settings.ComputeByRefererAndUri);
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("IISLOGPARSER_ComputeByRefererAndUri", null);
+            directory.Delete(recursive: true);
+        }
+    }
+
+    [Fact]
     public void BindAppSettings_WithNullConfiguration_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => AppConfigurationFactory.BindAppSettings(null!));

@@ -43,6 +43,20 @@ public class RunSummaryReporterTests
     }
 
     [Fact]
+    public void ReportByRefererAndUriSkipped_LogsWarningNamingTheSetting()
+    {
+        using var provider = new CapturingLoggerProvider();
+        using var loggerFactory = LoggerFactory.Create(builder => builder.AddProvider(provider));
+        var reporter = new RunSummaryReporter(loggerFactory);
+
+        reporter.ReportByRefererAndUriSkipped();
+
+        var entry = Assert.Single(provider.Entries);
+        Assert.Equal(LogLevel.Warning, entry.Level);
+        Assert.Contains("ComputeByRefererAndUri", entry.Message, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ReportFieldMapsAttribution_WithNullCounts_ThrowsArgumentNullException()
     {
         var reporter = new RunSummaryReporter();

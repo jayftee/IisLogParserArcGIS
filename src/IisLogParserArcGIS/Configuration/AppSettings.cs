@@ -27,4 +27,12 @@ public sealed class AppSettings
     /// requests in <c>cs-uri-stem</c> values.
     /// </summary>
     public string PortalWebAdaptorName { get; set; } = string.Empty;
+
+    /// <summary>
+    /// Gets or sets a value indicating whether a Harvest Run computes and stores the by-referer-and-URI aggregate.
+    /// Defaults to <see langword="false"/>: the aggregate is the largest and is not used by the Dashboard. When
+    /// <see langword="false"/> the table still exists but the run neither writes to it nor deletes rows an earlier
+    /// run stored.
+    /// </summary>
+    public bool ComputeByRefererAndUri { get; set; }
 }
