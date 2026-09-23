@@ -4,6 +4,8 @@ A .NET console application that turns daily IIS W3C log files from an ArcGIS Ser
 
 Run once per day (e.g. from Windows Task Scheduler) against a log source directory, a target local date, and an output database path, it discovers the right file(s) for that day, parses and normalizes every line, computes ten aggregate views in memory, and atomically replaces that day's rows in the output database.
 
+![Home Screen](home_screen.png)
+
 ## Why this exists
 
 The organization runs ArcGIS Server and Portal behind IIS. Operators need to answer questions like *"which endpoints are busiest?"*, *"which ArcGIS services are failing?"*, *"who's driving load?"* — but the only source of truth is raw, daily-rotated IIS log files. Keeping raw rows around indefinitely isn't wanted, and re-running a day's processing (e.g. after a bug fix) must never double-count that day's totals.
