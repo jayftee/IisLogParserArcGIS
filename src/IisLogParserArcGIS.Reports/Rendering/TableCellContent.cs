@@ -1,7 +1,7 @@
 namespace IisLogParserArcGIS.Reports.Rendering;
 
 /// <summary>
-/// Whether a <see cref="GoogleChartsRenderer.RenderTable(string, IReadOnlyList{IReadOnlyList{object}}, TablePaging, TableCellContent, string)"/>
+/// Whether a <see cref="GoogleChartsRenderer.RenderTable(string, IReadOnlyList{IReadOnlyList{object}}, TablePaging, TableCellContent, string, int)"/>
 /// call turns on the widget's <c>allowHtml</c> option, so a cell can carry real markup (e.g. a link to that
 /// row's own Detail Page, per ticket 13) instead of being rendered as literal text.
 /// </summary>

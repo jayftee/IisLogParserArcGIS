@@ -1,7 +1,7 @@
 namespace IisLogParserArcGIS.Reports.Rendering;
 
 /// <summary>
-/// Whether a <see cref="GoogleChartsRenderer.RenderTable(string, IReadOnlyList{IReadOnlyList{object}}, TablePaging, TableCellContent, string)"/>
+/// Whether a <see cref="GoogleChartsRenderer.RenderTable(string, IReadOnlyList{IReadOnlyList{object}}, TablePaging, TableCellContent, string, int)"/>
 /// call turns on the widget's built-in <c>page: 'enable'</c> paging.
 /// </summary>
 public enum TablePaging

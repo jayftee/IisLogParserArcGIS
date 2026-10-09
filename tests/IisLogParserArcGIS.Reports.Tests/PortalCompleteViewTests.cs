@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using Dapper;
 using IisLogParserArcGIS.Data.Connections;
@@ -53,7 +54,7 @@ public sealed class PortalCompleteViewTests
     }
 
     [Fact]
-    public void Run_CompleteView_LeavesPagingOff_SoEveryRowIsShown()
+    public void Run_CompleteView_TurnsOnPagingAtOneThousandRowsPerPage()
     {
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
@@ -62,7 +63,46 @@ public sealed class PortalCompleteViewTests
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
 
-        Assert.DoesNotContain("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("pageSize: 1000", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Run_CompleteView_WritesATsvSiblingWithTheSameRowsMinusTheDetailPageColumn()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var tsvPath = Path.Combine(outputDirectory.Path, "portal", "complete-view.tsv");
+        Assert.True(File.Exists(tsvPath));
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
+        var tableRows = ExtractTableRows(html);
+        var tsvLines = File.ReadAllLines(tsvPath);
+
+        Assert.Equal(tableRows.Length, tsvLines.Length);
+        Assert.Equal("Portal Item\tHits\tTotal Time Taken (s)\tAverage Time Taken (s)\tSuccessful Hits\tFailed Hits", tsvLines[0]);
+
+        var oracleRow = tableRows[1];
+        var tsvFields = tsvLines[1].Split('\t');
+
+        Assert.Equal(ExpectedTsvField(oracleRow[0].GetProperty("v").GetString()!), tsvFields[0]);
+        Assert.Equal(oracleRow[1].GetInt32().ToString(CultureInfo.InvariantCulture), tsvFields[1]);
+    }
+
+    [Fact]
+    public void Run_CompleteView_ShowsADownloadAsTsvLink()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
+
+        Assert.Contains("""<a href="complete-view.tsv">Download as TSV</a>""", html, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -119,6 +159,12 @@ public sealed class PortalCompleteViewTests
 
         Assert.NotEmpty(tableRows);
     }
+
+    // Real Portal item ids can start with '+' (per the project's own memory of this corpus); TsvWriter quotes
+    // any string cell starting with a formula-trigger character ('=', '+', '-', '@') to prevent CSV/TSV formula
+    // injection when the file is opened in a spreadsheet, so the oracle value must be adjusted the same way.
+    private static string ExpectedTsvField(string rawValue) =>
+        rawValue.Length > 0 && rawValue[0] is '=' or '+' or '-' or '@' ? "'" + rawValue : rawValue;
 
     private static JsonElement[] ExtractTableRows(string html)
     {

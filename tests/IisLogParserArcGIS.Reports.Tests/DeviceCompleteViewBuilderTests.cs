@@ -31,7 +31,7 @@ public sealed class DeviceCompleteViewBuilderTests
 
     [Theory]
     [MemberData(nameof(SectionSlugs), MemberType = typeof(DeviceSectionTestSupport))]
-    public void Run_CompleteView_HasTheSevenColumns_AndPagingOff_SoEveryRowIsShown(string sectionSlug)
+    public void Run_CompleteView_HasTheSevenColumns_AndPagingOnAtOneThousandRowsPerPage(string sectionSlug)
     {
         var section = SectionFor(sectionSlug);
         using var outputDirectory = new TempDirectoryPath();
@@ -43,8 +43,52 @@ public sealed class DeviceCompleteViewBuilderTests
         var header = ExtractDataTableRows(html)[0].EnumerateArray().Select(cell => cell.GetString()).ToArray();
 
         Assert.Equal(_expectedHeaders, header);
-        Assert.DoesNotContain("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("pageSize: 1000", html, StringComparison.Ordinal);
         Assert.Contains($"{section.SectionSlug}-complete-view-table", html, StringComparison.Ordinal);
+    }
+
+    [Theory]
+    [MemberData(nameof(SectionSlugs), MemberType = typeof(DeviceSectionTestSupport))]
+    public void Run_CompleteView_WritesATsvSiblingWithTheSameRowsMinusTheDetailPageColumn(string sectionSlug)
+    {
+        var section = SectionFor(sectionSlug);
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var tsvRelativePath = Path.ChangeExtension(section.CompleteViewHref, ".tsv");
+        var tsvPath = Path.Combine(outputDirectory.Path, tsvRelativePath.Replace('/', Path.DirectorySeparatorChar));
+        Assert.True(File.Exists(tsvPath));
+
+        var html = ReadPage(outputDirectory.Path, section.CompleteViewHref);
+        var tableRows = ExtractDataTableRows(html);
+        var tsvLines = File.ReadAllLines(tsvPath);
+
+        Assert.Equal(tableRows.Length, tsvLines.Length);
+        Assert.Equal("Username\tDevice ID\tHits\tTotal Time Taken (s)\tAverage Time Taken (s)\tLast Seen", tsvLines[0]);
+
+        var oracleRow = tableRows[1];
+        var tsvFields = tsvLines[1].Split('\t');
+
+        Assert.Equal(CellText(oracleRow[1]), tsvFields[1]);
+        Assert.Equal(oracleRow[2].GetInt32().ToString(CultureInfo.InvariantCulture), tsvFields[2]);
+    }
+
+    [Theory]
+    [MemberData(nameof(SectionSlugs), MemberType = typeof(DeviceSectionTestSupport))]
+    public void Run_CompleteView_ShowsADownloadAsTsvLink(string sectionSlug)
+    {
+        var section = SectionFor(sectionSlug);
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var html = ReadPage(outputDirectory.Path, section.CompleteViewHref);
+
+        Assert.Contains("""<a href="complete-view.tsv">Download as TSV</a>""", html, StringComparison.Ordinal);
     }
 
     [Theory]
@@ -204,6 +248,10 @@ public sealed class DeviceCompleteViewBuilderTests
 
         Assert.Contains("No data for this range.", html, StringComparison.Ordinal);
         Assert.DoesNotContain("arrayToDataTable", html, StringComparison.Ordinal);
+        Assert.DoesNotContain("Download as TSV", html, StringComparison.Ordinal);
+
+        var tsvRelativePath = Path.ChangeExtension(section.CompleteViewHref, ".tsv");
+        Assert.False(File.Exists(Path.Combine(outputDirectory.Path, tsvRelativePath.Replace('/', Path.DirectorySeparatorChar))));
     }
 
     [Theory]

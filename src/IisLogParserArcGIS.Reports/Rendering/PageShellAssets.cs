@@ -104,6 +104,8 @@ public static class PageShellAssets
            the row's far right (margin-left: auto on a flex row) keeps that distinction visible instead of
            reading as a third, equal option in the same group. */
         .detail-back-link { margin-left: auto; margin-right: 0; }
+        .tsv-download-link { margin: 0 0 1rem; font-size: 0.9rem; }
+        .tsv-download-link a { color: var(--text-highlight); }
         """;
 
     /// <summary>

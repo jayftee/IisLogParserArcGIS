@@ -22,7 +22,8 @@ namespace IisLogParserArcGIS.Reports.Rendering;
 public static class GoogleChartsRenderer
 {
     /// <summary>
-    /// The row count per page for a <see cref="RenderTable"/> call with <see cref="TablePaging.Enabled"/>.
+    /// The default row count per page for a <see cref="RenderTable"/> call with <see cref="TablePaging.Enabled"/>
+    /// that doesn't pass its own <c>pageSize</c> - the flat Leaderboard tables.
     /// </summary>
     private const int TablePageSize = 50;
 
@@ -254,14 +255,21 @@ public static class GoogleChartsRenderer
     /// An optional title, shown in its own card directly above the table's card - omitted (<see langword="null"/>)
     /// by default, since most callers rely on the page's own browser title instead.
     /// </param>
+    /// <param name="pageSize">
+    /// The row count per page when <paramref name="paging"/> is <see cref="TablePaging.Enabled"/>; ignored
+    /// otherwise. Defaults to <see cref="TablePageSize"/> - the flat Leaderboard tables rely on that default
+    /// rather than passing their own value, so a Complete View raising its own page size (reports ticket 30)
+    /// never changes a Leaderboard's.
+    /// </param>
     /// <returns>The table's container element and bootstrap script (plus a title card, if given), ready to embed in a page body.</returns>
-#pragma warning disable CC0042 // Three independent, defaulted rendering-option values alongside the table's own id/rows; bundling them would just repackage unrelated values.
+#pragma warning disable CC0042 // Four independent, defaulted rendering-option values alongside the table's own id/rows; bundling them would just repackage unrelated values.
     public static string RenderTable(
         string elementId,
         IReadOnlyList<IReadOnlyList<object?>> rows,
         TablePaging paging = TablePaging.Disabled,
         TableCellContent cellContent = TableCellContent.PlainText,
-        string? title = null)
+        string? title = null,
+        int pageSize = TablePageSize)
 #pragma warning restore CC0042
     {
         ArgumentNullException.ThrowIfNull(elementId);
@@ -275,7 +283,7 @@ public static class GoogleChartsRenderer
         }
 
         var dataJson = JsonSerializer.Serialize(rows);
-        var pagingOptions = paging == TablePaging.Enabled ? $"page: 'enable', pageSize: {TablePageSize}, " : string.Empty;
+        var pagingOptions = paging == TablePaging.Enabled ? $"page: 'enable', pageSize: {pageSize}, " : string.Empty;
         var allowHtmlOptions = cellContent == TableCellContent.Html ? "allowHtml: true, " : string.Empty;
 
         return $$"""

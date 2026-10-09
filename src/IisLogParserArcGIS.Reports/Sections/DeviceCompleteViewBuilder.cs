@@ -10,10 +10,11 @@ namespace IisLogParserArcGIS.Reports.Sections;
 
 /// <summary>
 /// Builds a per-device section's Complete View (Fieldmaps, ticket 21; Survey123, ticket 22): a single, uncapped,
-/// unpaged, sortable table listing every device - attributed or not - with all days merged
-/// (calendar-year-to-date). The table's own (date, device) grain already matches what this needs, so no SQL view
-/// is required (per ticket 03). Each row also links to that device's own Detail Page - the only place such a
-/// link exists. Last Seen is rendered as ISO <c>yyyy-MM-dd</c> text, which sorts chronologically as text.
+/// sortable table listing every device - attributed or not - with all days merged (calendar-year-to-date). The
+/// table's own (date, device) grain already matches what this needs, so no SQL view is required (per ticket 03).
+/// Each row also links to that device's own Detail Page - the only place such a link exists. Last Seen is
+/// rendered as ISO <c>yyyy-MM-dd</c> text, which sorts chronologically as text. Paged in the browser at 1000
+/// rows/page, with a full, unpaged copy of every row available as a sibling <c>.tsv</c> file (reports ticket 30).
 /// </summary>
 public static class DeviceCompleteViewBuilder
 {
@@ -46,13 +47,17 @@ public static class DeviceCompleteViewBuilder
         var rows = AggregateDatabaseSchema.TableExists(connection, section.Table.Name)
             ? new DeviceRangeTotalsQuery(connection, section.Table).GetRangeTotals(boundaries.YearStart, boundaries.Today).ToArray()
             : [];
+        var table = BuildTable(section, rows);
+
+        var bodyHtml = CompleteViewBody.Build(
+            outputDirectory, section.CompleteViewHref, $"{section.SectionSlug}-complete-view-table", table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html);
 
         var request = new PageShellRequest
         {
             Title = $"{section.Title} » Complete View",
             OutputRelativePath = section.CompleteViewHref,
             ActiveHref = section.CompleteViewHref,
-            BodyHtml = BuildTableBody(section, rows),
+            BodyHtml = bodyHtml,
             GeneratedAtUtc = generatedAtUtc,
             RequiresGoogleCharts = true,
             IncludedRoots = settings.IncludedRoots,
@@ -61,7 +66,7 @@ public static class DeviceCompleteViewBuilder
         StaticPageWriter.Write(outputDirectory, request);
     }
 
-    private static string BuildTableBody(DeviceSection section, IReadOnlyList<DeviceRangeTotalRow> rows)
+    private static List<IReadOnlyList<object?>> BuildTable(DeviceSection section, IReadOnlyList<DeviceRangeTotalRow> rows)
     {
         var rootPrefix = RelativeLinkHelper.ComputeRootPrefix(section.CompleteViewHref);
         var table = new List<IReadOnlyList<object?>>
@@ -90,6 +95,6 @@ public static class DeviceCompleteViewBuilder
             ]);
         }
 
-        return GoogleChartsRenderer.RenderTable($"{section.SectionSlug}-complete-view-table", table, TablePaging.Disabled, TableCellContent.Html);
+        return table;
     }
 }

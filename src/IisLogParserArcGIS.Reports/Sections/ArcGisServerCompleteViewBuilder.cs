@@ -13,7 +13,8 @@ namespace IisLogParserArcGIS.Reports.Sections;
 /// 03's resolution - the same reasoning already applied to the Summary section's Complete View). Each row's
 /// Service Name links to that service's own live REST endpoint on ArcGIS Server (mirroring the Portal Complete
 /// View's Portal Item column), and its own "Detail Page" column links to that service's own Detail Page
-/// (ticket 13) - the only place such a link exists.
+/// (ticket 13) - the only place such a link exists. Paged in the browser at 1000 rows/page, with a full, unpaged
+/// copy of every row available as a sibling <c>.tsv</c> file (reports ticket 30).
 /// </summary>
 public static class ArcGisServerCompleteViewBuilder
 {
@@ -44,13 +45,17 @@ public static class ArcGisServerCompleteViewBuilder
         var includedRoots = settings.IncludedRoots;
         var rangeTotalsQuery = new ByArcGisServiceRangeTotalsQuery(connection);
         var rows = rangeTotalsQuery.GetRangeTotals(boundaries.YearStart, boundaries.Today, includedRoots).ToArray();
+        var table = BuildTable(rows, settings.ArcGisServerBaseUrl);
+
+        var bodyHtml = CompleteViewBody.Build(
+            outputDirectory, DashboardSidebar.ArcGisServerCompleteViewHref, TableElementId, table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html);
 
         var request = new PageShellRequest
         {
             Title = Title,
             OutputRelativePath = DashboardSidebar.ArcGisServerCompleteViewHref,
             ActiveHref = DashboardSidebar.ArcGisServerCompleteViewHref,
-            BodyHtml = BuildTableBody(rows, settings.ArcGisServerBaseUrl),
+            BodyHtml = bodyHtml,
             GeneratedAtUtc = generatedAtUtc,
             RequiresGoogleCharts = true,
             IncludedRoots = includedRoots,
@@ -59,7 +64,7 @@ public static class ArcGisServerCompleteViewBuilder
         StaticPageWriter.Write(outputDirectory, request);
     }
 
-    private static string BuildTableBody(IReadOnlyList<ArcGisServiceRangeTotalRow> rows, string arcGisServerBaseUrl)
+    private static List<IReadOnlyList<object?>> BuildTable(IReadOnlyList<ArcGisServiceRangeTotalRow> rows, string arcGisServerBaseUrl)
     {
         var rootPrefix = RelativeLinkHelper.ComputeRootPrefix(DashboardSidebar.ArcGisServerCompleteViewHref);
         var table = new List<IReadOnlyList<object?>>
@@ -99,6 +104,6 @@ public static class ArcGisServerCompleteViewBuilder
             ]);
         }
 
-        return GoogleChartsRenderer.RenderTable(TableElementId, table, TablePaging.Disabled, TableCellContent.Html);
+        return table;
     }
 }

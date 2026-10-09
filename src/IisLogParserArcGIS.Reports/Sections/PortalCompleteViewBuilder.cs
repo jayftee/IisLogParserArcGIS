@@ -13,7 +13,8 @@ namespace IisLogParserArcGIS.Reports.Sections;
 /// ArcGIS Server Complete Views). Each row's Portal item id links to that item's own live page on Portal (per
 /// ticket 05's resolution) - built from the configured <see cref="ReportsSettings.PortalBaseUrl"/>, with no live
 /// Portal REST call made at generation time. Each row also links to that item's own Detail Page (ticket 16) - the
-/// only place such a link exists.
+/// only place such a link exists. Paged in the browser at 1000 rows/page, with a full, unpaged copy of every row
+/// available as a sibling <c>.tsv</c> file (reports ticket 30).
 /// </summary>
 public static class PortalCompleteViewBuilder
 {
@@ -43,13 +44,17 @@ public static class PortalCompleteViewBuilder
 
         var rangeTotalsQuery = new ByPortalItemRangeTotalsQuery(connection);
         var rows = rangeTotalsQuery.GetRangeTotals(boundaries.YearStart, boundaries.Today).ToArray();
+        var table = BuildTable(rows, settings.PortalBaseUrl);
+
+        var bodyHtml = CompleteViewBody.Build(
+            outputDirectory, DashboardSidebar.PortalCompleteViewHref, TableElementId, table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html);
 
         var request = new PageShellRequest
         {
             Title = Title,
             OutputRelativePath = DashboardSidebar.PortalCompleteViewHref,
             ActiveHref = DashboardSidebar.PortalCompleteViewHref,
-            BodyHtml = BuildTableBody(rows, settings.PortalBaseUrl),
+            BodyHtml = bodyHtml,
             GeneratedAtUtc = generatedAtUtc,
             RequiresGoogleCharts = true,
             IncludedRoots = settings.IncludedRoots,
@@ -58,7 +63,7 @@ public static class PortalCompleteViewBuilder
         StaticPageWriter.Write(outputDirectory, request);
     }
 
-    private static string BuildTableBody(IReadOnlyList<PortalItemRangeTotalRow> rows, string portalBaseUrl)
+    private static List<IReadOnlyList<object?>> BuildTable(IReadOnlyList<PortalItemRangeTotalRow> rows, string portalBaseUrl)
     {
         var rootPrefix = RelativeLinkHelper.ComputeRootPrefix(DashboardSidebar.PortalCompleteViewHref);
         var table = new List<IReadOnlyList<object?>>
@@ -93,6 +98,6 @@ public static class PortalCompleteViewBuilder
             ]);
         }
 
-        return GoogleChartsRenderer.RenderTable(TableElementId, table, TablePaging.Disabled, TableCellContent.Html);
+        return table;
     }
 }

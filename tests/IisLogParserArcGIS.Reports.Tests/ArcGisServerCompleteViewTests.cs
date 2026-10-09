@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Text.Json;
 using Dapper;
 using IisLogParserArcGIS.Data.Connections;
@@ -56,7 +57,7 @@ public sealed class ArcGisServerCompleteViewTests
     }
 
     [Fact]
-    public void Run_CompleteView_LeavesPagingOff_SoEveryRowIsShown()
+    public void Run_CompleteView_TurnsOnPagingAtOneThousandRowsPerPage()
     {
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
@@ -65,7 +66,49 @@ public sealed class ArcGisServerCompleteViewTests
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
 
-        Assert.DoesNotContain("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("pageSize: 1000", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Run_CompleteView_WritesATsvSiblingWithTheSameRowsMinusTheDetailPageColumn()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var tsvPath = Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.tsv");
+        Assert.True(File.Exists(tsvPath));
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
+        var tableRows = ExtractTableRows(html);
+        var tsvLines = File.ReadAllLines(tsvPath);
+
+        Assert.Equal(tableRows.Length, tsvLines.Length);
+        Assert.Equal(
+            "Site\tFolder\tService Name\tService Type\tHits\tTotal Time Taken (s)\tAverage Time Taken (s)\tSuccessful Hits\tFailed Hits",
+            tsvLines[0]);
+
+        var oracleRow = tableRows[1];
+        var tsvFields = tsvLines[1].Split('\t');
+
+        Assert.Equal(ExpectedTsvField(DeviceSectionTestSupport.CellText(oracleRow[0])), tsvFields[0]);
+        Assert.Equal(ExpectedTsvField(oracleRow[2].GetProperty("v").GetString()!), tsvFields[2]);
+        Assert.Equal(oracleRow[4].GetInt32().ToString(CultureInfo.InvariantCulture), tsvFields[4]);
+    }
+
+    [Fact]
+    public void Run_CompleteView_ShowsADownloadAsTsvLink()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
+
+        Assert.Contains("""<a href="complete-view.tsv">Download as TSV</a>""", html, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -180,6 +223,12 @@ public sealed class ArcGisServerCompleteViewTests
         Assert.Equal(ServiceTypeMarkup, DeviceSectionTestSupport.CellText(row[3]));
         Assert.All([row[0], row[1], row[3]], cell => Assert.DoesNotContain("<", cell.GetProperty("f").GetString(), StringComparison.Ordinal));
     }
+
+    // Folder/Service Name are parsed straight from request URIs and can start with a formula-trigger character
+    // ('=', '+', '-', '@'); TsvWriter quotes such a string cell to prevent CSV/TSV formula injection when the
+    // file is opened in a spreadsheet, so the oracle value must be adjusted the same way.
+    private static string ExpectedTsvField(string rawValue) =>
+        rawValue.Length > 0 && rawValue[0] is '=' or '+' or '-' or '@' ? "'" + rawValue : rawValue;
 
 #pragma warning disable CC0042 // Five independent identity components an expected live-endpoint link is built from; a parameter object would just repackage them without benefit.
     private static string ExpectedLiveLink(string baseUrl, string site, string? folder, string serviceName, string serviceType)

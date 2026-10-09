@@ -81,6 +81,63 @@ public sealed class SummarySectionTests
     }
 
     [Fact]
+    public void Run_CompleteView_TurnsOnPagingAtOneThousandRowsPerPage()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "complete-view.html"));
+
+        Assert.Contains("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("pageSize: 1000", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Run_CompleteView_WritesATsvSiblingWithTheSameRows()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+        var settings = CreateSettings();
+
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+
+        var tsvPath = Path.Combine(outputDirectory.Path, "summary", "complete-view.tsv");
+        Assert.True(File.Exists(tsvPath));
+
+        var tsvLines = File.ReadAllLines(tsvPath);
+
+        Assert.Equal("Root\tHits\tTotal Time Taken (s)\tAverage Time Taken (s)", tsvLines[0]);
+        Assert.Equal(settings.IncludedRoots.Count + 1, tsvLines.Length);
+
+        foreach (var root in settings.IncludedRoots)
+        {
+            var expectedHits = connection.QuerySingle<int>(
+                """
+                SELECT COALESCE(SUM(hits), 0) FROM aggregated_by_root
+                WHERE root = @Root AND local_date BETWEEN @Start AND @End
+                """,
+                new { Root = root, Start = _yearStart, End = _today });
+
+            Assert.Contains(tsvLines, line => line.StartsWith($"{root}\t{expectedHits}\t", StringComparison.Ordinal));
+        }
+    }
+
+    [Fact]
+    public void Run_CompleteView_ShowsADownloadAsTsvLink()
+    {
+        using var outputDirectory = new TempDirectoryPath();
+        using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
+
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+
+        var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "complete-view.html"));
+
+        Assert.Contains("""<a href="complete-view.tsv">Download as TSV</a>""", html, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Run_SuccessfulRequestsAll_ContainsEveryRealIncludedRootAsASeries()
     {
         using var outputDirectory = new TempDirectoryPath();

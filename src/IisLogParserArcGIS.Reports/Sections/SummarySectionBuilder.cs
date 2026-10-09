@@ -10,7 +10,9 @@ namespace IisLogParserArcGIS.Reports.Sections;
 /// Builds the Summary section: the per-Root total-requests line chart (All and Last 7 Days variants) and the
 /// Complete View table (hits, total time taken, average time taken, one row per Root) - the Dashboard's first
 /// section (ticket 10), proving the query → embed → render pipeline end-to-end. Sourced directly from the
-/// by-Root aggregate; no SQL view is needed at this grain (per ticket 03).
+/// by-Root aggregate; no SQL view is needed at this grain (per ticket 03). The Complete View is paged in the
+/// browser at 1000 rows/page, with a full, unpaged copy of every row available as a sibling <c>.tsv</c> file
+/// (reports ticket 30).
 /// </summary>
 public static class SummarySectionBuilder
 {
@@ -49,10 +51,14 @@ public static class SummarySectionBuilder
         var last7DaysRows = allDailyRows.Where(row => row.LocalDate >= boundaries.Last7DaysStart).ToArray();
         var rangeTotalsRows = rangeTotalsQuery.GetRangeTotals(boundaries.YearStart, boundaries.Today, includedRoots).ToArray();
 
+        var completeViewTable = BuildCompleteViewTable(rangeTotalsRows, includedRoots);
+        var completeViewBody = CompleteViewBody.Build(
+            outputDirectory, DashboardSidebar.SummaryCompleteViewHref, "summary-complete-view-table", completeViewTable, title: CompleteViewTitle);
+
         var bodies = new SummaryPageBodies(
             BuildLineChartBody(allDailyRows, includedRoots, SuccessfulRequestsAllTitle),
             BuildLineChartBody(last7DaysRows, includedRoots, SuccessfulRequestsLast7DaysTitle),
-            BuildCompleteViewBody(rangeTotalsRows, includedRoots));
+            completeViewBody);
 
         foreach (var request in BuildPageRequests(bodies, includedRoots, generatedAtUtc))
         {
@@ -126,7 +132,7 @@ public static class SummarySectionBuilder
         return GoogleChartsRenderer.RenderLineChart("summary-total-requests-chart", new LineChartData(columns, dataRows), title);
     }
 
-    private static string BuildCompleteViewBody(IReadOnlyList<ByRootRangeTotalRow> rangeTotalsRows, IReadOnlyList<string> includedRoots)
+    private static List<IReadOnlyList<object?>> BuildCompleteViewTable(IReadOnlyList<ByRootRangeTotalRow> rangeTotalsRows, IReadOnlyList<string> includedRoots)
     {
         var totalsByRoot = rangeTotalsRows.ToDictionary(row => row.Root, row => row);
 
@@ -151,7 +157,7 @@ public static class SummarySectionBuilder
             table.Add([root, hits, Math.Round(totalTimeTakenSecond, 3), Math.Round(averageTimeTakenSecond, 3)]);
         }
 
-        return GoogleChartsRenderer.RenderTable("summary-complete-view-table", table, title: CompleteViewTitle);
+        return table;
     }
 
     private sealed record SummaryPageBodies(string AllChart, string Last7DaysChart, string CompleteView);

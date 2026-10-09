@@ -73,7 +73,7 @@ public sealed class FlatLeaderboardSectionTests
     }
 
     [Fact]
-    public void Run_ForwardedForIpLeaderboard_TurnsOnBuiltInPaging()
+    public void Run_ForwardedForIpLeaderboard_TurnsOnBuiltInPagingAtFiftyRowsPerPage()
     {
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
@@ -83,6 +83,7 @@ public sealed class FlatLeaderboardSectionTests
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/forwarded-for-ip/all.html"));
 
         Assert.Contains("page: 'enable'", html, StringComparison.Ordinal);
+        Assert.Contains("pageSize: 50", html, StringComparison.Ordinal);
     }
 
     [Fact]

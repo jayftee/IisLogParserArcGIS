@@ -64,6 +64,10 @@ One execution that rebuilds the entire Dashboard from the aggregate database's c
 A Root/Site named in the Reports project's own configuration, and therefore represented in the Dashboard. A Root absent from this list — scanner or pen-test traffic hitting an unrecognized host, say — is still aggregated as usual but never appears in any report.
 _Avoid_: allow-listed root, whitelisted root
 
+**Complete View**:
+A Dashboard page listing every entity in its section's whole population — every Portal Item, every ArcGIS Server folder/service/type combination across every Included Root, every Field Maps/Survey123 Device, or every Root for Summary — with no top-N cap, sortable by column. Paired with a `.tsv` sibling file (same name, `.tsv` extension, same directory) holding the same rows as plain tab-separated text — headers, no link-only columns, `{v,f}`-shaped cells reduced to their plain value — the sanctioned way to get every row's exact values outside the browser. Its own HTML table is paged (page size 1000) to bound DOM cost regardless of population size; a viewer who wants every row at once reaches for the TSV instead.
+_Avoid_: listing page, index table — distinct from Leaderboard, which caps to a ranked top-N rather than listing the whole population.
+
 **Detail Page**:
 A Dashboard page scoped to a single ArcGIS Server Service, Portal Item, Field Maps Device, or Survey123 Device, showing that one entity's own request evolution over the year (for a Field Maps Device or Survey123 Device: its hits per day, headed by its username or "Unattributed" and its device id). Reached only from its section's Complete View, never from the sidebar.
 _Avoid_: drill-down page, item page

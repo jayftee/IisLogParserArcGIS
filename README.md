@@ -642,6 +642,7 @@ graph TB
         Shell["PageShellRenderer<br/><i>header · sidebar · footer</i>"]
         Sidebar["DashboardSidebar<br/><i>nav tree + every page's href</i>"]
         Writer["StaticPageWriter"]
+        Tsv["TsvWriter"]
     end
 
     Sections -->|BarChartEntry / AnnotatedTimeLineData /<br/>table rows, per ticket 01's chart-type decision| Charts
@@ -649,6 +650,8 @@ graph TB
     Writer --> Shell
     Shell --> Sidebar
     Writer -->|writes .html| Disk[("Dashboard/ output directory")]
+    Sections -->|table rows, Complete Views only, per reports ticket 30| Tsv
+    Tsv -->|writes .tsv sibling| Disk
 ```
 
 - **The Dashboard's site map** (the sidebar, in order): **Summary**, **Portal**, **ArcGIS Server** (one group per Included Root), **Fieldmaps**, **Survey123**, **Leaderboard**. Portal, Fieldmaps and Survey123 render unconditionally — none is gated or filtered by `IncludedRoots`. Fieldmaps reports *usage by Field Maps device* (hits and time taken; no success/failure split): `Leaderboard: Hits` (a Top-50 bar chart, one bar per device labelled `username · full-device-id`, All and Last 7 Days as separate pages), a `Complete View` (every device, attributed or not, with a sortable **Last Seen** column for licence validation) and, reached only from that Complete View's Detail Page column, one per-device Detail Page charting the device's hits per day with an in-page All / Last 7 Days toggle. A database created before the Field Maps table existed still renders the section, with empty-data cards. **Survey123** is the same section again over `aggregated_by_survey123_device` (`survey123/…` paths, 32-hex device ids): the same three page types, built by the same three per-device builders parameterized over a `DeviceSection` (table, title, slug), so the two sections cannot drift apart and never show each other's devices.
@@ -657,6 +660,7 @@ graph TB
 - **No HTML templating engine.** Every page is generated from C# raw string literals interpolated directly in the render methods — no `.cshtml`/`.scriban`/`.mustache` files on disk, no reflection-based model binding. This is deliberate, not an omission: every value embedded into a page (a `cs-uri-stem`, a user agent, a referer) ultimately derives from unauthenticated request data with no character allow-listing at ingest time, and the Dashboard itself has no login ([ADR 0006](docs/adr/0006-no-authentication-on-dashboard.md)) — so every interpolation goes through `JsonSerializer.Serialize`'s default HTML-safe encoder, and every C# expression inside a template is compiler-checked. A templating engine that doesn't auto-escape for an HTML context would reopen exactly the injection risk this design closes.
 - **`PageShellRequest` is the one contract** every Section Builder produces and `StaticPageWriter` consumes: title, output-relative path, active sidebar entry, body HTML, and whether the page needs the Google Charts CDN loader. `PageShellRenderer` wraps that body in the shared header/sidebar/footer; `DashboardSidebar` is the single source of truth for the nav tree *and* every page's own href (so a link and the sidebar entry it points at can never drift apart).
 - **`IncludedRoots` filtering lives here, not in the parser** ([ADR 0007](docs/adr/0007-root-allow-listing-lives-in-reports-project.md)) — the aggregate database keeps every Root IIS ever saw; a Regeneration Run decides which ones are worth showing.
+- **Every Complete View also writes a `.tsv` sibling** (`TsvWriter`, reports ticket 30) built from the exact same table each builder already assembled for its HTML page — any `{ v, f }` cell reduced to its plain value, the trailing link-only column (e.g. "Detail Page") dropped, embedded TAB/CR/LF replaced with a space. This is also why every Complete View's own `google.visualization.Table` went back to `page: 'enable'` (page size 1000, [ADR 0010](docs/adr/0010-complete-view-paging-returns-now-that-tsv-exists.md)): the TSV is the "see everything at once" escape valve, so the HTML page no longer has to be. The flat Leaderboard tables keep their own, unrelated page size of 50.
 
 ### Cross-cutting patterns worth knowing before you read the code
 
