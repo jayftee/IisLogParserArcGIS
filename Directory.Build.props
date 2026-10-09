@@ -124,8 +124,13 @@
       with cleancoders.json validated against an embedded schema at build time; earlier versions
       predate that check entirely. Pinned to 0.2.3 (latest in C:\_LocalNuGet as of this writing) —
       bump this whenever a newer build lands in the feed.
+
+      Skipped when $(CI) is true (set automatically by GitHub Actions): that local feed is an
+      absolute, machine-specific path (C:\_LocalNuGet) that doesn't exist on a runner, and this is
+      an analyzer only - it never ships in the published output - so a CI job that's just
+      publishing a binary from a commit already verified warning-free locally doesn't need it.
     -->
-    <PackageReference Include="CleanCoders.Analyzers" Version="0.2.3" />
+    <PackageReference Include="CleanCoders.Analyzers" Version="0.2.3" Condition="'$(CI)' != 'true'" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)cleancoders.json" Link="cleancoders.json" />
   </ItemGroup>
 </Project>
