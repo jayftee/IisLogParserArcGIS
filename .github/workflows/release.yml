@@ -30,6 +30,15 @@ jobs:
           $version = "${{ github.ref_name }}" -replace '^v', ''
           "version=$version" >> $env:GITHUB_OUTPUT
 
+      - name: Disable the local-only NuGet source
+        # nuget.config's "LocalCleanCoders" source is C:\_LocalNuGet, a path that only exists on
+        # the maintainer's own machine (it hosts the private CleanCoders.Analyzers package, whose
+        # restore is itself already skipped in CI - see Directory.Build.props). NuGet checks every
+        # *configured* source's reachability during restore regardless of whether any package
+        # actually needs it, so merely dropping that one PackageReference isn't enough - the
+        # source itself has to be disabled, or restore still fails with NU1301.
+        run: dotnet nuget disable source LocalCleanCoders
+
       - name: Publish (framework-dependent)
         run: dotnet publish src/IisLogParserArcGIS/IisLogParserArcGIS.csproj -c Release -p:Version=${{ steps.version.outputs.version }} -o publish
 
