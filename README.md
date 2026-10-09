@@ -103,6 +103,17 @@ Scripts\Invoke-IisLogBackfill.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDataba
 
 A date whose invocation fails (e.g. a missing adjacent-day file) is recorded and the run continues with the next date; the script prints a final summary of how many dates succeeded/failed and exits non-zero if any date failed. The final `regenerate` call runs unconditionally, even if every date failed. This only derives the correct date when the configured `LocalTimeZone` is `UTC` — see the script's comment-based help (`Get-Help .\Invoke-IisLogBackfill.ps1 -Full`) for the exact boundary-case caveat.
 
+### Scheduled daily runs
+
+For an unattended Scheduled Task, use `Scripts\Invoke-IisLogDailyRun.ps1` instead of calling `harvest-regenerate` directly — it computes "today" (or "yesterday", with `-Yesterday`) itself, so the task's own arguments never need editing as the calendar moves forward:
+
+```powershell
+Scripts\Invoke-IisLogDailyRun.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDatabasePath "D:\Aggregates\usage.sqlite"
+Scripts\Invoke-IisLogDailyRun.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDatabasePath "D:\Aggregates\usage.sqlite" -Yesterday
+```
+
+Schedule it twice: hourly with no switch, so each run re-harvests however much of today's logs exist so far (safe to repeat — a Daily Batch replace is always a full replace of that date's rows, never incremental), and once more shortly after midnight (e.g. 02:00) with `-Yesterday`, to catch the previous day's final log lines after that day's last hourly run already happened. Unlike the backfill script, this one never scans the log source directory for dates — it always targets exactly the date it computed, so its exit code is simply whatever `harvest-regenerate` itself returned.
+
 ## Configuration
 
 One executable, one shared configuration file: bound from `appsettings.json`, overlaid with `appsettings.{DOTNET_ENVIRONMENT}.json` when present (e.g. `appsettings.Development.json` sets `LogLevel: Debug` for local development). Every run harvests that day's logs *and* regenerates the Dashboard in the same process (see [One run, end to end](#one-run-end-to-end)), so both sets of settings below live in this one file - there's no separate config file for the Dashboard/Reports side.
