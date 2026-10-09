@@ -709,6 +709,17 @@ dotnet test tests/IisLogParserArcGIS.Reports.Tests                      # uses t
 dotnet test tests/IisLogParserArcGIS.RegressionTests                    # uses the checked-in 2026/ corpus + a prior build
 ```
 
+## Releasing
+
+Pushing a tag matching `v*.*.*` (e.g. `v1.2.0`) triggers [`.github/workflows/release.yml`](.github/workflows/release.yml): it publishes a framework-dependent build of the Cli project (the target machine still needs the matching .NET runtime installed), zips the publish output (the exe, both `appsettings*.json` files, and `Scripts/`), and attaches that zip to a GitHub Release named after the tag, with auto-generated notes.
+
+```powershell
+git tag v1.2.0
+git push origin v1.2.0
+```
+
+The workflow does not run the test suite — the Reports suite alone takes about 15 minutes (it harvests the whole checked-in `2026/` corpus), and a release is only ever cut from a commit already verified green locally (see [Testing strategy](#testing-strategy) above).
+
 ## Where to look
 
 | I want to change/understand... | Start here |

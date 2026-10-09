@@ -1,0 +1,46 @@
+name: Release
+
+# Publishes a framework-dependent build of the Cli project and attaches it as a GitHub Release
+# asset whenever a version tag (v1.2.3) is pushed. Does not run the test suite - the Reports
+# suite alone takes ~15 minutes (it harvests the whole checked-in 2026/ corpus), and a release is
+# only ever cut from a commit that has already been verified green locally.
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Resolve version from tag
+        id: version
+        run: |
+          $version = "${{ github.ref_name }}" -replace '^v', ''
+          "version=$version" >> $env:GITHUB_OUTPUT
+
+      - name: Publish (framework-dependent)
+        run: dotnet publish src/IisLogParserArcGIS/IisLogParserArcGIS.csproj -c Release -p:Version=${{ steps.version.outputs.version }} -o publish
+
+      - name: Package release archive
+        id: package
+        run: |
+          $zipPath = "IisLogParserArcGIS-${{ steps.version.outputs.version }}.zip"
+          Compress-Archive -Path "publish\*" -DestinationPath $zipPath
+          "zipPath=$zipPath" >> $env:GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release create "${{ github.ref_name }}" "${{ steps.package.outputs.zipPath }}" --title "${{ github.ref_name }}" --generate-notes
