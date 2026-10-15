@@ -47,7 +47,7 @@ public static class PortalCompleteViewBuilder
         var table = BuildTable(rows, settings.PortalBaseUrl);
 
         var bodyHtml = CompleteViewBody.Build(
-            outputDirectory, DashboardSidebar.PortalCompleteViewHref, TableElementId, table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html);
+            outputDirectory, DashboardSidebar.PortalCompleteViewHref, TableElementId, table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html, title: Title);
 
         var request = new PageShellRequest
         {

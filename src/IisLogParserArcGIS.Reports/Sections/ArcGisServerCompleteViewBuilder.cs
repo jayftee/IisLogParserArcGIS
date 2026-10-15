@@ -48,7 +48,7 @@ public static class ArcGisServerCompleteViewBuilder
         var table = BuildTable(rows, settings.ArcGisServerBaseUrl);
 
         var bodyHtml = CompleteViewBody.Build(
-            outputDirectory, DashboardSidebar.ArcGisServerCompleteViewHref, TableElementId, table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html);
+            outputDirectory, DashboardSidebar.ArcGisServerCompleteViewHref, TableElementId, table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html, title: Title);
 
         var request = new PageShellRequest
         {

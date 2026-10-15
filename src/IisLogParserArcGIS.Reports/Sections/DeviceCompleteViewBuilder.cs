@@ -49,12 +49,14 @@ public static class DeviceCompleteViewBuilder
             : [];
         var table = BuildTable(section, rows);
 
+        var title = $"{section.Title} » Complete View";
+
         var bodyHtml = CompleteViewBody.Build(
-            outputDirectory, section.CompleteViewHref, $"{section.SectionSlug}-complete-view-table", table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html);
+            outputDirectory, section.CompleteViewHref, $"{section.SectionSlug}-complete-view-table", table, trailingColumnsToDrop: 1, cellContent: TableCellContent.Html, title: title);
 
         var request = new PageShellRequest
         {
-            Title = $"{section.Title} » Complete View",
+            Title = title,
             OutputRelativePath = section.CompleteViewHref,
             ActiveHref = section.CompleteViewHref,
             BodyHtml = bodyHtml,
