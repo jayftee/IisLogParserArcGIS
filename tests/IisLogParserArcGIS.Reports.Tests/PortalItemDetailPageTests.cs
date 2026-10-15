@@ -38,7 +38,7 @@ public sealed class PortalItemDetailPageTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var oracleItemIds = connection.Query<string>(
             """
@@ -67,7 +67,7 @@ public sealed class PortalItemDetailPageTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var oracleItemId = connection.QuerySingle<string>(
             """
@@ -93,7 +93,7 @@ public sealed class PortalItemDetailPageTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var oracleItemId = connection.QuerySingle<string>(
             """
@@ -119,7 +119,7 @@ public sealed class PortalItemDetailPageTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var oracleItemId = connection.QuerySingle<string>(
             """
@@ -151,7 +151,7 @@ public sealed class PortalItemDetailPageTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var href = DashboardSidebar.PortalItemDetailHref("toggle-item");
         var fullPath = Path.Combine(outputDirectory.Path, href.Replace('/', Path.DirectorySeparatorChar));
@@ -175,7 +175,7 @@ public sealed class PortalItemDetailPageTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var href = DashboardSidebar.PortalItemDetailHref("weird*item?");
         var fullPath = Path.Combine(outputDirectory.Path, href.Replace('/', Path.DirectorySeparatorChar));
@@ -199,7 +199,7 @@ public sealed class PortalItemDetailPageTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var href = DashboardSidebar.PortalItemDetailHref("sparse-item");
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, href.Replace('/', Path.DirectorySeparatorChar)));
@@ -290,7 +290,6 @@ public sealed class PortalItemDetailPageTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

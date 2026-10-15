@@ -51,7 +51,7 @@ public sealed class RegenerateRunner
             using var connection = SqliteConnectionFactory.Open(parsedArguments.InputDatabasePath);
             AggregateDatabaseSchema.EnsureCreated(connection);
 
-            return new DashboardRegenerator(_environment).Regenerate(connection, configuration);
+            return new DashboardRegenerator(_environment).Regenerate(connection, configuration, parsedArguments.OutputDirectory, parsedArguments.Year);
         }
         catch (Exception ex) when (ex is FileNotFoundException or FormatException or IOException or UnauthorizedAccessException or SqliteException)
         {

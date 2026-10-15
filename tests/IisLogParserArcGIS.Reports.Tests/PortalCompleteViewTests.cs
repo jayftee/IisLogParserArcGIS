@@ -35,7 +35,7 @@ public sealed class PortalCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.True(File.Exists(Path.Combine(outputDirectory.Path, "portal", "complete-view.html")));
     }
@@ -46,7 +46,7 @@ public sealed class PortalCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
 
@@ -59,7 +59,7 @@ public sealed class PortalCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
 
@@ -73,7 +73,7 @@ public sealed class PortalCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var tsvPath = Path.Combine(outputDirectory.Path, "portal", "complete-view.tsv");
         Assert.True(File.Exists(tsvPath));
@@ -98,7 +98,7 @@ public sealed class PortalCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
 
@@ -112,7 +112,7 @@ public sealed class PortalCompleteViewTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
 
@@ -149,10 +149,9 @@ public sealed class PortalCompleteViewTests
             LocalTimeZone = "UTC",
             IncludedRoots = [],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "portal", "complete-view.html"));
         var tableRows = ExtractTableRows(html);
@@ -204,7 +203,6 @@ public sealed class PortalCompleteViewTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

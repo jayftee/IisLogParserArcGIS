@@ -11,7 +11,6 @@ namespace IisLogParserArcGIS.Reports.Configuration;
 public static class ReportsConfigurationFactory
 {
     private const string DefaultLocalTimeZone = "UTC";
-    private const string DefaultOutputDirectory = "Dashboard";
 
     /// <summary>
     /// Binds <see cref="ReportsSettings"/> from the given configuration, substituting the documented default for
@@ -26,7 +25,6 @@ public static class ReportsConfigurationFactory
         var settings = configuration.Get<ReportsSettings>() ?? new ReportsSettings();
 
         settings.LocalTimeZone = Coalesce(settings.LocalTimeZone, DefaultLocalTimeZone);
-        settings.OutputDirectory = Coalesce(settings.OutputDirectory, DefaultOutputDirectory);
         settings.IncludedRoots ??= [];
 
         return settings;

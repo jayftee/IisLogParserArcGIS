@@ -33,7 +33,7 @@ public sealed class SummarySectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.True(File.Exists(Path.Combine(outputDirectory.Path, "index.html")));
         Assert.True(File.Exists(Path.Combine(outputDirectory.Path, "summary", "successful-requests", "all.html")));
@@ -48,7 +48,7 @@ public sealed class SummarySectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var indexHtml = File.ReadAllText(Path.Combine(outputDirectory.Path, "index.html"));
         var allHtml = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "successful-requests", "all.html"));
@@ -63,7 +63,7 @@ public sealed class SummarySectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var completeViewHtml = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "complete-view.html"));
 
@@ -86,7 +86,7 @@ public sealed class SummarySectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "complete-view.html"));
 
@@ -101,7 +101,7 @@ public sealed class SummarySectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var tsvPath = Path.Combine(outputDirectory.Path, "summary", "complete-view.tsv");
         Assert.True(File.Exists(tsvPath));
@@ -130,7 +130,7 @@ public sealed class SummarySectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "complete-view.html"));
 
@@ -144,7 +144,7 @@ public sealed class SummarySectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var allHtml = File.ReadAllText(Path.Combine(outputDirectory.Path, "summary", "successful-requests", "all.html"));
 
@@ -181,7 +181,6 @@ public sealed class SummarySectionTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

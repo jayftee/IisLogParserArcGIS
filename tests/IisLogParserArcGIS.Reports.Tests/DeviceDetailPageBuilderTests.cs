@@ -28,7 +28,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var deviceIds = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.CompleteViewHref))
             .Skip(1)
@@ -59,7 +59,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.DetailHref("back-device"));
         var nav = html[html.IndexOf("<nav class=\"dashboard-sidebar\">", StringComparison.Ordinal)..html.IndexOf("</nav>", StringComparison.Ordinal)];
@@ -79,7 +79,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.DetailHref("toggle-device"));
 
@@ -103,7 +103,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var known = ReadPage(outputDirectory.Path, section.DetailHref("known-device"));
         var unknown = ReadPage(outputDirectory.Path, section.DetailHref("unknown-device"));
@@ -132,7 +132,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.DetailHref("sparse-device"));
         var chartScript = ExtractScriptContaining(html, $"{section.SectionSlug}-device-detail-hits-chart-all");
@@ -157,7 +157,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.DetailHref("daily-device"));
         var chartScript = ExtractScriptContaining(html, $"{section.SectionSlug}-device-detail-hits-chart-all");
@@ -181,7 +181,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.DetailHref("window-device"));
         var last7Script = ExtractScriptContaining(html, $"{section.SectionSlug}-device-detail-hits-chart-last-7-days");
@@ -203,7 +203,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var chartScript = ExtractScriptContaining(ReadPage(outputDirectory.Path, section.DetailHref("shared-id")), $"{section.SectionSlug}-device-detail-hits-chart-all");
         var yesterday = Today.AddDays(-1);
@@ -223,7 +223,7 @@ public sealed class DeviceDetailPageBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.False(Directory.Exists(Path.Combine(outputDirectory.Path, section.SectionSlug, "detail")));
     }

@@ -18,6 +18,9 @@
     <None Include="appsettings.Development.json" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Scripts\Invoke-IisLogBackfill.ps1" CopyToOutputDirectory="PreserveNewest" />
     <None Include="Scripts\Invoke-IisLogDailyRun.ps1" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Scripts\IisLogBackfill.bat" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Scripts\IisLogHourly.bat" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Scripts\IisLogNightly.bat" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

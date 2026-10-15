@@ -38,7 +38,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.True(File.Exists(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html")));
     }
@@ -49,7 +49,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
 
@@ -62,7 +62,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
 
@@ -76,7 +76,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var tsvPath = Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.tsv");
         Assert.True(File.Exists(tsvPath));
@@ -104,7 +104,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
 
@@ -118,7 +118,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
 
@@ -155,7 +155,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
 
@@ -176,7 +176,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
         var rootPrefix = RelativeLinkHelper.ComputeRootPrefix(DashboardSidebar.ArcGisServerCompleteViewHref);
@@ -213,7 +213,7 @@ public sealed class ArcGisServerCompleteViewTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "arcgis-server", "complete-view.html"));
         var row = ExtractTableRows(html).Skip(1).Single(candidate => candidate[2].GetProperty("v").GetString() == "xss-service");
@@ -298,7 +298,6 @@ public sealed class ArcGisServerCompleteViewTests
             ],
             PortalBaseUrl = "portal.example.com",
             ArcGisServerBaseUrl = "gis.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

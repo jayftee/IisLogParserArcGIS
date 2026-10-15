@@ -8,8 +8,8 @@ namespace IisLogParserArcGIS.Cli;
 
 /// <summary>
 /// The Dashboard-regeneration step shared by the <c>regenerate</c> and <c>harvest-regenerate</c> verbs: binds the
-/// Reports settings, resolves and guards the Dashboard output directory, runs the Regeneration Run, and turns any
-/// operational failure into an operator-facing message and a non-zero exit code.
+/// Reports settings, guards the Dashboard output directory the operator named, runs the Regeneration Run for the
+/// operator's year, and turns any operational failure into an operator-facing message and a non-zero exit code.
 /// </summary>
 public sealed class DashboardRegenerator
 {
@@ -34,18 +34,22 @@ public sealed class DashboardRegenerator
     /// </summary>
     /// <param name="connection">An open connection to the aggregate database.</param>
     /// <param name="configuration">The executable's built configuration, the Reports settings are bound from.</param>
+    /// <param name="outputDirectory">The full path of the directory to generate the Dashboard into.</param>
+    /// <param name="year">The calendar year the Dashboard reports on.</param>
     /// <param name="logSourceDirectory">The IIS log directory of the current Harvest Run, if there is one.</param>
     /// <returns><c>0</c> on success; <c>1</c> after writing the failure message to the error writer.</returns>
-    public int Regenerate(SqliteConnection connection, IConfiguration configuration, string? logSourceDirectory = null)
+#pragma warning disable CC0042 // Five independent inputs the two verbs thread through unchanged; a parameter object would only repackage them.
+    public int Regenerate(SqliteConnection connection, IConfiguration configuration, string outputDirectory, int year, string? logSourceDirectory = null)
+#pragma warning restore CC0042
     {
         ArgumentNullException.ThrowIfNull(connection);
         ArgumentNullException.ThrowIfNull(configuration);
+        ArgumentNullException.ThrowIfNull(outputDirectory);
 
         try
         {
             var reportsSettings = ReportsConfigurationFactory.BindReportsSettings(configuration);
             var logOutputDirectory = AppConfigurationFactory.BindAppSettings(configuration).LogOutputDirectory;
-            var reportsOutputDirectory = RelativePathResolver.Resolve(reportsSettings.OutputDirectory, _environment.BaseDirectory);
 
             var protectedPaths = new List<ProtectedPath>
             {
@@ -59,9 +63,9 @@ public sealed class DashboardRegenerator
                 protectedPaths.Add(new ProtectedPath("the log source directory", logSourceDirectory));
             }
 
-            EnsureNothingProtectedIsDeleted(reportsOutputDirectory, protectedPaths);
+            EnsureNothingProtectedIsDeleted(outputDirectory, protectedPaths);
 
-            RegenerationRun.Run(connection, reportsSettings, _environment.TimeProvider, reportsOutputDirectory);
+            RegenerationRun.Run(connection, reportsSettings, _environment.TimeProvider, outputDirectory, year);
             return 0;
         }
         catch (Exception ex) when (ex is FileNotFoundException or FormatException or IOException or UnauthorizedAccessException

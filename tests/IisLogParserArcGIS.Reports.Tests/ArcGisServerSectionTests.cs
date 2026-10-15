@@ -51,7 +51,7 @@ public sealed class ArcGisServerSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         foreach (var site in settings.IncludedRoots)
         {
@@ -72,7 +72,7 @@ public sealed class ArcGisServerSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.False(Directory.Exists(Path.Combine(outputDirectory.Path, "arcgis-server", "proxy")));
     }
@@ -84,7 +84,7 @@ public sealed class ArcGisServerSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "index.html"));
         var arcGisServerHtml = ExtractSection(html, "ArcGIS Server", "Leaderboard");
@@ -104,7 +104,7 @@ public sealed class ArcGisServerSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         const string Site = "mimas";
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "arcgis-server", Site, DashboardSidebar.ArcGisServerSuccessfulRequestsSlug, "all.html"));
@@ -136,7 +136,7 @@ public sealed class ArcGisServerSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         const string Site = "mimas";
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "arcgis-server", Site, DashboardSidebar.ArcGisServerAverageTimeSuccessfulSlug, "all.html"));
@@ -170,7 +170,7 @@ public sealed class ArcGisServerSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         const string Site = "arcgis";
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "arcgis-server", Site, DashboardSidebar.ArcGisServerLeaderboardSuccessfulHitsSlug, "all.html"));
@@ -218,7 +218,7 @@ public sealed class ArcGisServerSectionTests
 
         Assert.True(oracleServiceCount < 50, "This test expects rhea to have fewer than 50 services, to exercise the under-full Leaderboard case.");
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "arcgis-server", "rhea", DashboardSidebar.ArcGisServerLeaderboardSuccessfulHitsSlug, "all.html"));
@@ -284,7 +284,6 @@ public sealed class ArcGisServerSectionTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

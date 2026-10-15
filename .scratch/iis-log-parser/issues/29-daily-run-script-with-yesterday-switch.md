@@ -4,7 +4,7 @@
 
 **Blocked by:** none.
 
-**Status:** done
+**Status:** done (the `-Yesterday` switch was superseded by ticket 30: the script now takes an explicit `-TargetDate`, and the `.bat` wrappers compute today/yesterday)
 
 ## Change
 

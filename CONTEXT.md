@@ -58,7 +58,10 @@ _Avoid_: report site, web site — "site" is already taken by Root/Site and ArcG
 One execution that parses a single Local Date's IIS log lines and replaces that date's Daily Batch in the aggregate database. Never triggers a Regeneration Run itself — the Dashboard reflects a Harvest Run's data only once a separate Regeneration Run is performed.
 
 **Regeneration Run**:
-One execution that rebuilds the entire Dashboard from the aggregate database's current contents, replacing every previously generated page. Always a full rebuild — a Regeneration Run never updates the Dashboard incrementally — and stands on its own: it operates on whatever the aggregate database currently holds, whether or not a Harvest Run has just preceded it.
+One execution that rebuilds the entire Dashboard from the aggregate database's current contents, replacing every previously generated page. Always a full rebuild — a Regeneration Run never updates the Dashboard incrementally — and stands on its own: it operates on whatever the aggregate database currently holds, whether or not a Harvest Run has just preceded it. It is told, explicitly, which year to report on and which directory to write into — neither comes from configuration or the clock — and it only replaces a directory that is new, empty, or already marked as a Dashboard (see **Dashboard Marker**).
+
+**Dashboard Marker**:
+The empty `.iis-dashboard` file every Regeneration Run writes into its output directory. A Regeneration Run replaces a non-empty output directory only if it holds this marker, so a mistyped path can never delete a directory the tool did not itself generate.
 
 **Included Root**:
 A Root/Site named in the Reports project's own configuration, and therefore represented in the Dashboard. A Root absent from this list — scanner or pen-test traffic hitting an unrecognized host, say — is still aggregated as usual but never appears in any report.

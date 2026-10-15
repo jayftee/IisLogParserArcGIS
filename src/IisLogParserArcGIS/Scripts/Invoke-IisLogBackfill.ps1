@@ -1,40 +1,53 @@
 <#
 .SYNOPSIS
-    Runs IisLogParserArcGIS.exe's harvest verb once per UTC calendar date found in a log source
-    directory, then regenerates the Dashboard once at the end.
+    Runs IisLogParserArcGIS.exe's harvest verb once per Local Date of one year, then regenerates that
+    year's Dashboard once at the end.
 .DESCRIPTION
-    The harvest verb processes exactly one local date per invocation. This script scans
-    -LogSourceDirectory for files named u_ex<YYMMDD>*.log (the same opaque-wildcard glob the CLI
-    itself uses - it never inspects or branches on anything after the date), derives the distinct
-    set of UTC dates from those file names, and invokes `harvest` once per date, in sequence,
-    against the same -OutputDatabasePath. Once every date has been attempted, it invokes
-    `regenerate` exactly once against -OutputDatabasePath - unconditionally, regardless of how many
-    dates succeeded or failed - so a full backlog regenerates the Dashboard once instead of once per
-    date.
+    The harvest verb processes exactly one Local Date per invocation. This script walks every Local
+    Date of -Year - January 1 through December 31, or through today when -Year is the current year,
+    since a future date has no logs yet - and invokes `harvest` once per date, in sequence, against
+    the same -OutputDatabasePath. Once every date has been attempted, it invokes `regenerate` exactly
+    once for -Year into -OutputDirectory - unconditionally, regardless of how many dates succeeded or
+    failed - so a whole year regenerates the Dashboard once instead of once per date.
 
-    A file's own embedded UTC date is passed straight through as harvest's target local date, with
-    no time-zone adjustment. This is only correct when the configured LocalTimeZone is UTC, and even
-    then, lines that cross midnight in the very first or last physical file found are not attributed
-    to any run. This is an accepted characteristic of this script, not a bug.
+    Dates come from the calendar, never from the log files' names: each date is a Local Date handed
+    to `harvest`, which itself works out (from the configured LocalTimeZone) which UTC-dated files that
+    Local Date needs, including the adjacent day's. So this works whatever LocalTimeZone is, and
+    whether -LogSourceDirectory holds one year of logs or many - only -Year's dates are attempted.
+
+    A date whose invocation fails is recorded and the run continues with the next date. A date with no
+    log files at all is such a failure: in a layout that keeps one folder per year, December 31 needs
+    the next year's first file and will be reported as failed. That is expected, not a bug.
 
     Every harvest invocation writes to the same shared SQLite output file, so runs are always
-    sequential - never parallel - to avoid concurrent-writer lock contention. A date whose invocation
-    fails is recorded and the run continues with the next date; the script's own exit code is
-    non-zero if any date, or the final regenerate call, failed.
+    sequential - never parallel - to avoid concurrent-writer lock contention. The script's own exit
+    code is non-zero if any date, or the final regenerate call, failed.
 .PARAMETER LogSourceDirectory
     Directory containing the IIS W3C log files to process.
 .PARAMETER OutputDatabasePath
     Path to the output SQLite database file. Shared across every date processed by this run.
+.PARAMETER OutputDirectory
+    Directory the Dashboard is generated into. It must be new, empty, or hold a Dashboard a previous run
+    generated (it carries a .iis-dashboard marker); any other non-empty directory is refused.
+.PARAMETER Year
+    The four-digit calendar year to harvest and report on, e.g. 2026.
 .EXAMPLE
-    .\Invoke-IisLogBackfill.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDatabasePath "D:\Aggregates\usage.sqlite"
+    .\Invoke-IisLogBackfill.ps1 -LogSourceDirectory "D:\IISLogs\2026" -OutputDatabasePath "D:\Aggregates\Iis2026.sqlite" -OutputDirectory "D:\Dashboards\2026" -Year 2026
 #>
 [CmdletBinding()]
 param(
-    [Parameter(Mandatory = $true, Position = 0)]
+    [Parameter(Mandatory = $true)]
     [string]$LogSourceDirectory,
 
-    [Parameter(Mandatory = $true, Position = 1)]
-    [string]$OutputDatabasePath
+    [Parameter(Mandatory = $true)]
+    [string]$OutputDatabasePath,
+
+    [Parameter(Mandatory = $true)]
+    [string]$OutputDirectory,
+
+    [Parameter(Mandatory = $true)]
+    [ValidateRange(1000, 9999)]
+    [int]$Year
 )
 
 $exePath = Join-Path (Split-Path -Parent $PSScriptRoot) 'IisLogParserArcGIS.exe'
@@ -49,36 +62,22 @@ if (-not (Test-Path -LiteralPath $LogSourceDirectory -PathType Container)) {
     exit 1
 }
 
-$logFiles = Get-ChildItem -LiteralPath $LogSourceDirectory -File
-$datePattern = '^u_ex(\d{6}).*\.log$'
-$dates = New-Object 'System.Collections.Generic.SortedSet[string]'
+$firstDate = [datetime]::new($Year, 1, 1)
+$lastDate = [datetime]::new($Year, 12, 31)
+$today = (Get-Date).Date
 
-foreach ($file in $logFiles) {
-    $match = [regex]::Match($file.Name, $datePattern, [System.Text.RegularExpressions.RegexOptions]::IgnoreCase)
-    if (-not $match.Success) {
-        continue
-    }
-
-    $rawDate = $match.Groups[1].Value
-    $parsedDate = New-Object DateTime
-    $isValidDate = [datetime]::TryParseExact(
-        "20$rawDate",
-        'yyyyMMdd',
-        [System.Globalization.CultureInfo]::InvariantCulture,
-        [System.Globalization.DateTimeStyles]::None,
-        [ref]$parsedDate)
-
-    if (-not $isValidDate) {
-        Write-Warning "Skipping '$($file.Name)': '$rawDate' is not a valid date."
-        continue
-    }
-
-    [void]$dates.Add($parsedDate.ToString('yyyy-MM-dd'))
+if ($firstDate -gt $today) {
+    Write-Error "Year $Year has not started yet; there are no logs to harvest."
+    exit 1
 }
 
-if ($dates.Count -eq 0) {
-    Write-Error "No files matching 'u_ex<YYMMDD>*.log' were found in '$LogSourceDirectory'."
-    exit 1
+if ($lastDate -gt $today) {
+    $lastDate = $today
+}
+
+$dates = New-Object 'System.Collections.Generic.List[string]'
+for ($date = $firstDate; $date -le $lastDate; $date = $date.AddDays(1)) {
+    $dates.Add($date.ToString('yyyy-MM-dd', [System.Globalization.CultureInfo]::InvariantCulture))
 }
 
 $total = $dates.Count
@@ -110,9 +109,9 @@ if ($failed.Count -gt 0) {
 }
 
 Write-Host ''
-Write-Host 'Regenerating the Dashboard...'
+Write-Host "Regenerating the $Year Dashboard..."
 
-& $exePath regenerate $OutputDatabasePath
+& $exePath regenerate $OutputDatabasePath $OutputDirectory --year $Year
 $regenerateExitCode = $LASTEXITCODE
 $regenerateFailed = $regenerateExitCode -ne 0
 

@@ -35,7 +35,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.True(File.Exists(Path.Combine(outputDirectory.Path, section.SectionSlug, "leaderboard-hits", "all.html")));
         Assert.True(File.Exists(Path.Combine(outputDirectory.Path, section.SectionSlug, "leaderboard-hits", "last-7-days.html")));
@@ -47,7 +47,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var nav = ExtractSidebarNav(ReadPage(outputDirectory.Path, DeviceSection.Fieldmaps.LeaderboardHitsHref(DashboardDateRange.All)));
         var arcGisServer = nav.IndexOf(">ArcGIS Server</summary>", StringComparison.Ordinal);
@@ -85,7 +85,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.All));
 
@@ -101,7 +101,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         AssertLeaderboardMatchesOracle(connection, section, ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.All)), YearStart);
     }
@@ -114,7 +114,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings("arcgis"), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         AssertLeaderboardMatchesOracle(connection, section, ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.Last7Days)), Last7DaysStart);
     }
@@ -139,7 +139,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var rows = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.All))).Skip(1).ToArray();
 
@@ -164,7 +164,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var rows = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.All))).Skip(1).ToArray();
 
@@ -182,7 +182,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         foreach (var range in new[] { DashboardDateRange.All, DashboardDateRange.Last7Days })
         {
@@ -205,7 +205,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.Contains("No data for this range.", ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.All)), StringComparison.Ordinal);
         Assert.NotEmpty(ExtractDataTableRows(ReadPage(outputDirectory.Path, other.LeaderboardHitsHref(DashboardDateRange.All))).Skip(1));
@@ -225,7 +225,7 @@ public sealed class DeviceLeaderboardSectionBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         foreach (var section in DeviceSection.All)
         {

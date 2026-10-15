@@ -45,7 +45,7 @@ public sealed class PortalSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         foreach (var metricSlug in _metricSlugs)
         {
@@ -64,7 +64,7 @@ public sealed class PortalSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettingsWithNoIncludedRoots();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         foreach (var metricSlug in _metricSlugs)
         {
@@ -81,7 +81,7 @@ public sealed class PortalSectionTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettingsWithNoIncludedRoots();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, "index.html"));
 
@@ -95,7 +95,7 @@ public sealed class PortalSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "portal", DashboardSidebar.PortalSuccessfulRequestsSlug, "all.html"));
@@ -126,7 +126,7 @@ public sealed class PortalSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "portal", DashboardSidebar.PortalLeaderboardSuccessfulHitsSlug, "all.html"));
@@ -156,7 +156,7 @@ public sealed class PortalSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(
             outputDirectory.Path, "portal", DashboardSidebar.PortalLeaderboardFailedHitsSlug, "all.html"));
@@ -209,7 +209,6 @@ public sealed class PortalSectionTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 
@@ -220,7 +219,6 @@ public sealed class PortalSectionTests
             LocalTimeZone = "UTC",
             IncludedRoots = [],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

@@ -9,6 +9,8 @@ namespace IisLogParserArcGIS.Cli;
 public static class CliArgumentValidator
 {
     private const string DateFormat = "yyyy-MM-dd";
+    private const int FirstFourDigitYear = 1000;
+    private const int LastFourDigitYear = 9999;
 
     /// <summary>
     /// Validates the raw arguments of a Harvest Run verb (<c>harvest</c> or <c>harvest-regenerate</c>), returning
@@ -29,10 +31,26 @@ public static class CliArgumentValidator
     }
 
     /// <summary>
-    /// Validates the raw argument of the <c>regenerate</c> verb, returning its normalized, typed form.
+    /// Validates the raw arguments of the <c>harvest-regenerate</c> verb, returning their normalized, typed form.
     /// </summary>
-    /// <param name="arguments">The raw argument parsed from the command line.</param>
-    /// <returns>The validated, normalized argument.</returns>
+    /// <param name="arguments">The raw arguments parsed from the command line.</param>
+    /// <returns>The validated, normalized arguments.</returns>
+    /// <exception cref="CliArgumentValidationException">A required argument is malformed.</exception>
+    public static ParsedHarvestRegenerateArguments Validate(HarvestRegenerateArguments arguments)
+    {
+        ArgumentNullException.ThrowIfNull(arguments);
+
+        var harvest = Validate((IHarvestArguments)arguments);
+        var outputDirectory = ValidatePath(arguments.OutputDirectory, "output directory");
+
+        return new ParsedHarvestRegenerateArguments(harvest, outputDirectory);
+    }
+
+    /// <summary>
+    /// Validates the raw arguments of the <c>regenerate</c> verb, returning their normalized, typed form.
+    /// </summary>
+    /// <param name="arguments">The raw arguments parsed from the command line.</param>
+    /// <returns>The validated, normalized arguments.</returns>
     /// <exception cref="CliArgumentValidationException">
     /// The argument is malformed, or names a database that does not exist.
     /// </exception>
@@ -41,6 +59,8 @@ public static class CliArgumentValidator
         ArgumentNullException.ThrowIfNull(arguments);
 
         var inputDatabasePath = ValidatePath(arguments.InputDatabasePath, "input database path");
+        var outputDirectory = ValidatePath(arguments.OutputDirectory, "output directory");
+        var year = ValidateYear(arguments.Year);
 
         if (File.Exists(inputDatabasePath) is false)
         {
@@ -48,7 +68,7 @@ public static class CliArgumentValidator
                 $"The input database path '{inputDatabasePath}' does not exist. The regenerate verb reads an existing aggregate database - it never creates one.");
         }
 
-        return new ParsedRegenerateArguments(inputDatabasePath);
+        return new ParsedRegenerateArguments(inputDatabasePath, outputDirectory, year);
     }
 
     private static string ValidatePath(string value, string argumentDescription)
@@ -66,6 +86,17 @@ public static class CliArgumentValidator
         {
             throw new CliArgumentValidationException($"The {argumentDescription} '{value}' is not a valid path.", ex);
         }
+    }
+
+    private static int ValidateYear(int value)
+    {
+        if (value is >= FirstFourDigitYear and <= LastFourDigitYear)
+        {
+            return value;
+        }
+
+        throw new CliArgumentValidationException(
+            $"The year '{value.ToString(CultureInfo.InvariantCulture)}' is not valid. Expected a four-digit year such as 2026.");
     }
 
     private static DateOnly ValidateDate(string value)

@@ -36,7 +36,7 @@ public sealed class ArcGisServiceDetailPageTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var oracleServices = connection.Query<(string Site, string? Folder, string ServiceName, string ServiceType)>(
             """
@@ -65,7 +65,7 @@ public sealed class ArcGisServiceDetailPageTests
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
         var settings = CreateSettings();
 
-        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var oracleService = connection.QuerySingle<(string Site, string? Folder, string ServiceName, string ServiceType)>(
             """
@@ -93,7 +93,7 @@ public sealed class ArcGisServiceDetailPageTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var href = DashboardSidebar.ArcGisServiceDetailHref("titan", null, "toggle-service", "MapServer");
         var fullPath = Path.Combine(outputDirectory.Path, href.Replace('/', Path.DirectorySeparatorChar));
@@ -117,7 +117,7 @@ public sealed class ArcGisServiceDetailPageTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var href = DashboardSidebar.ArcGisServiceDetailHref("titan", null, "weird*service?", "MapServer");
         var fullPath = Path.Combine(outputDirectory.Path, href.Replace('/', Path.DirectorySeparatorChar));
@@ -141,7 +141,7 @@ public sealed class ArcGisServiceDetailPageTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var href = DashboardSidebar.ArcGisServiceDetailHref("titan", null, "sparse-service", "MapServer");
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, href.Replace('/', Path.DirectorySeparatorChar)));
@@ -216,7 +216,6 @@ public sealed class ArcGisServiceDetailPageTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 }

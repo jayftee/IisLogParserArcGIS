@@ -23,7 +23,7 @@ public class HarvestRunnerTests
         Assert.Equal(0, exitCode);
         Assert.Equal(string.Empty, workspace.Error.ToString());
         Assert.Equal(2, TotalByUriHits(databasePath));
-        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+        Assert.False(Directory.Exists(workspace.DashboardDirectory));
     }
 
     [Fact]
@@ -88,16 +88,40 @@ public class HarvestRunnerTests
         Assert.Equal(0, exitCode);
         Assert.Equal(string.Empty, workspace.Error.ToString());
         Assert.Equal(2, TotalByUriHits(databasePath));
-        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard", "index.html")));
+        Assert.True(File.Exists(Path.Combine(workspace.DashboardDirectory, "index.html")));
+        Assert.True(File.Exists(Path.Combine(workspace.DashboardDirectory, ".iis-dashboard")));
+    }
+
+    [Fact]
+    public void Run_HarvestRegenerate_TakesTheDashboardYearFromTheHarvestedDate()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
+        workspace.WriteLogFile("u_ex990501_x_1.log", StandardHeader, "2099-05-01 12:00:00 /a Mozilla/5.0 - 200 10 -");
+        var databasePath = workspace.DatabasePath();
+
+        var arguments = new HarvestRegenerateArguments
+        {
+            LogSourceDirectory = workspace.LogSourceDirectory,
+            TargetLocalDate = "2099-05-01",
+            OutputDatabasePath = databasePath,
+            OutputDirectory = workspace.DashboardDirectory,
+        };
+
+        var exitCode = new HarvestRunner(workspace.Environment()).HarvestAndRegenerate(arguments);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Failed to regenerate the Dashboard: ", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Contains("2099", workspace.Error.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]
     public void Run_HarvestRegenerate_WhenTheDashboardOutputIsRefused_ReturnsOneButKeepsTheHarvestedRows()
     {
-        using var workspace = PrepareWorkspaceWithOneLogFile(new Dictionary<string, object?> { ["OutputDirectory"] = "." });
+        using var workspace = PrepareWorkspaceWithOneLogFile();
         var databasePath = workspace.DatabasePath();
 
-        var exitCode = HarvestAndRegenerate(workspace, databasePath);
+        var exitCode = HarvestAndRegenerate(workspace, databasePath, outputDirectory: workspace.BaseDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.StartsWith("Failed to regenerate the Dashboard: Refusing to use", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -109,14 +133,14 @@ public class HarvestRunnerTests
     public void Run_HarvestRegenerate_WhenTheDashboardOutputIsTheLogSourceDirectory_ReturnsOneAndKeepsTheIisLogs()
     {
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = workspace.LogSourceDirectory });
+        workspace.WriteAppSettings();
         var logFile = workspace.WriteLogFile(
             "u_ex260501_x_1.log",
             StandardHeader,
             "2026-05-01 12:00:00 /a Mozilla/5.0 - 200 10 -");
         var databasePath = workspace.DatabasePath();
 
-        var exitCode = HarvestAndRegenerate(workspace, databasePath);
+        var exitCode = HarvestAndRegenerate(workspace, databasePath, outputDirectory: workspace.LogSourceDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it resolves to the log source directory", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -178,7 +202,7 @@ public class HarvestRunnerTests
 
         Assert.Equal(1, exitCode);
         Assert.StartsWith("Refusing to replace 2026-05-01", workspace.Error.ToString(), StringComparison.Ordinal);
-        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+        Assert.False(Directory.Exists(workspace.DashboardDirectory));
     }
 
     [Fact]
@@ -362,9 +386,17 @@ public class HarvestRunnerTests
         return new HarvestRunner(workspace.Environment()).Harvest(Arguments(workspace.LogSourceDirectory, TargetDate, databasePath));
     }
 
-    private static int HarvestAndRegenerate(CliTestWorkspace workspace, string databasePath)
+    private static int HarvestAndRegenerate(CliTestWorkspace workspace, string databasePath, string? outputDirectory = null)
     {
-        return new HarvestRunner(workspace.Environment()).HarvestAndRegenerate(Arguments(workspace.LogSourceDirectory, TargetDate, databasePath));
+        var arguments = new HarvestRegenerateArguments
+        {
+            LogSourceDirectory = workspace.LogSourceDirectory,
+            TargetLocalDate = TargetDate,
+            OutputDatabasePath = databasePath,
+            OutputDirectory = outputDirectory ?? workspace.DashboardDirectory,
+        };
+
+        return new HarvestRunner(workspace.Environment()).HarvestAndRegenerate(arguments);
     }
 
     private static int ByRefererAndUriRowCount(string databasePath)

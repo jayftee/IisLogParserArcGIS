@@ -34,11 +34,10 @@ public sealed class CompleteViewTitleCardTests
             LocalTimeZone = "UTC",
             IncludedRoots = ["arcgis", "mimas", "titan"],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
         var timeProvider = new FakeTimeProvider(new DateTimeOffset(new DateOnly(2026, 9, 10), TimeOnly.MinValue, TimeSpan.Zero));
 
-        RegenerationRun.Run(connection, settings, timeProvider, outputDirectory.Path);
+        RegenerationRun.Run(connection, settings, timeProvider, outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(Path.Combine(outputDirectory.Path, sectionDirectory, "complete-view.html"));
 

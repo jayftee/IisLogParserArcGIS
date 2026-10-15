@@ -13,14 +13,12 @@ public class ReportsConfigurationFactoryTests
             {
                 ["LocalTimeZone"] = string.Empty,
                 ["PortalBaseUrl"] = string.Empty,
-                ["OutputDirectory"] = string.Empty,
             })
             .Build();
 
         var settings = ReportsConfigurationFactory.BindReportsSettings(configuration);
 
         Assert.Equal("UTC", settings.LocalTimeZone);
-        Assert.Equal("Dashboard", settings.OutputDirectory);
         Assert.Empty(settings.PortalBaseUrl);
         Assert.Empty(settings.IncludedRoots);
     }
@@ -33,7 +31,6 @@ public class ReportsConfigurationFactoryTests
             {
                 ["LocalTimeZone"] = "Eastern Standard Time",
                 ["PortalBaseUrl"] = "portal.example.com",
-                ["OutputDirectory"] = "C:\\CustomDashboard",
                 ["IncludedRoots:0"] = "arcgis",
                 ["IncludedRoots:1"] = "titan",
             })
@@ -43,7 +40,6 @@ public class ReportsConfigurationFactoryTests
 
         Assert.Equal("Eastern Standard Time", settings.LocalTimeZone);
         Assert.Equal("portal.example.com", settings.PortalBaseUrl);
-        Assert.Equal("C:\\CustomDashboard", settings.OutputDirectory);
         Assert.Equal(["arcgis", "titan"], settings.IncludedRoots);
     }
 

@@ -63,7 +63,6 @@ public static class DeviceSectionTestSupport
             LocalTimeZone = "UTC",
             IncludedRoots = includedRoots,
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 

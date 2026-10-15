@@ -37,35 +37,12 @@ public sealed class HarvestRunner
         _environment = environment;
     }
 
-    private enum PostHarvestStep
-    {
-        Nothing,
-        RegenerateDashboard,
-    }
-
     /// <summary>
     /// Runs the <c>harvest</c> verb: one Harvest Run, leaving the Dashboard untouched.
     /// </summary>
     /// <param name="arguments">The raw arguments parsed from the command line.</param>
     /// <returns><c>0</c> on success; <c>1</c> after writing the failure message to the error writer.</returns>
     public int Harvest(IHarvestArguments arguments)
-    {
-        return Execute(arguments, PostHarvestStep.Nothing);
-    }
-
-    /// <summary>
-    /// Runs the <c>harvest-regenerate</c> verb: one Harvest Run followed by a Regeneration Run on the same open
-    /// connection.
-    /// </summary>
-    /// <param name="arguments">The raw arguments parsed from the command line.</param>
-    /// <returns><c>0</c> on success; <c>1</c> after writing the failure message to the error writer.</returns>
-    public int HarvestAndRegenerate(IHarvestArguments arguments)
-    {
-        return Execute(arguments, PostHarvestStep.RegenerateDashboard);
-    }
-
-#pragma warning disable CC0034 // One straight-line pipeline whose steps share too many locals to split without parameter objects.
-    private int Execute(IHarvestArguments arguments, PostHarvestStep postHarvestStep)
     {
         ArgumentNullException.ThrowIfNull(arguments);
 
@@ -80,6 +57,36 @@ public sealed class HarvestRunner
             return 1;
         }
 
+        return Execute(parsedArguments, outputDirectory: null);
+    }
+
+    /// <summary>
+    /// Runs the <c>harvest-regenerate</c> verb: one Harvest Run followed by a Regeneration Run on the same open
+    /// connection, for the harvested Local Date's year.
+    /// </summary>
+    /// <param name="arguments">The raw arguments parsed from the command line.</param>
+    /// <returns><c>0</c> on success; <c>1</c> after writing the failure message to the error writer.</returns>
+    public int HarvestAndRegenerate(HarvestRegenerateArguments arguments)
+    {
+        ArgumentNullException.ThrowIfNull(arguments);
+
+        ParsedHarvestRegenerateArguments parsedArguments;
+        try
+        {
+            parsedArguments = CliArgumentValidator.Validate(arguments);
+        }
+        catch (CliArgumentValidationException ex)
+        {
+            _environment.Error.WriteLine(ex.Message);
+            return 1;
+        }
+
+        return Execute(parsedArguments.Harvest, parsedArguments.OutputDirectory);
+    }
+
+#pragma warning disable CC0034 // One straight-line pipeline whose steps share too many locals to split without parameter objects.
+    private int Execute(ParsedArguments parsedArguments, string? outputDirectory)
+    {
         var failureMessagePrefix = InitializationFailureMessagePrefix;
         try
         {
@@ -161,9 +168,10 @@ public sealed class HarvestRunner
             var persistedSurvey123Rows = new BySurvey123DeviceRepository().GetByLocalDate(connection, parsedArguments.TargetLocalDate).ToArray();
             runSummaryReporter.ReportSurvey123Attribution(DeviceAttributionCounts.Create(bySurvey123Device, persistedSurvey123Rows));
 
-            return postHarvestStep == PostHarvestStep.RegenerateDashboard
-                ? new DashboardRegenerator(_environment).Regenerate(connection, configuration, parsedArguments.LogSourceDirectory)
-                : 0;
+            return outputDirectory is null
+                ? 0
+                : new DashboardRegenerator(_environment).Regenerate(
+                    connection, configuration, outputDirectory, parsedArguments.TargetLocalDate.Year, parsedArguments.LogSourceDirectory);
         }
         catch (Exception ex) when (ex is FileNotFoundException or FormatException or IOException or UnauthorizedAccessException or SqliteException)
         {

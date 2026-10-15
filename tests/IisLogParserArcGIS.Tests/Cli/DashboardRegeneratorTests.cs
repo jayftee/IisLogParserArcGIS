@@ -2,6 +2,7 @@ using IisLogParserArcGIS.Cli;
 using IisLogParserArcGIS.Configuration;
 using IisLogParserArcGIS.Data.Connections;
 using IisLogParserArcGIS.Data.Schema;
+using IisLogParserArcGIS.Reports;
 using IisLogParserArcGIS.Tests.TestSupport;
 using Microsoft.Data.Sqlite;
 
@@ -10,27 +11,27 @@ namespace IisLogParserArcGIS.Tests.Cli;
 public class DashboardRegeneratorTests
 {
     private const string SentinelFileName = "sentinel.txt";
+    private const int Year = 2026;
 
-    // Each is resolved against a base directory that (like AppContext.BaseDirectory) ends in a separator.
+    // The base directory ends in a separator, like AppContext.BaseDirectory.
     [Theory]
-    [InlineData(".")]
-    [InlineData("./")]
-    [InlineData("sub/..")]
     [InlineData("{base}")]
+    [InlineData("{base}.")]
+    [InlineData("{base}sub/..")]
     [InlineData("{base-no-trailing-separator}")]
     [InlineData("{base-upper-case}")]
-    public void Regenerate_OutputDirectoryResolvesToTheBaseDirectory_RefusesAndLeavesItUntouched(string configuredOutputDirectory)
+    public void Regenerate_OutputDirectoryResolvesToTheBaseDirectory_RefusesAndLeavesItUntouched(string requestedOutputDirectory)
     {
-        ArgumentNullException.ThrowIfNull(configuredOutputDirectory);
+        ArgumentNullException.ThrowIfNull(requestedOutputDirectory);
         using var workspace = new CliTestWorkspace();
-        var outputDirectory = configuredOutputDirectory
-            .Replace("{base}", workspace.BaseDirectory, StringComparison.Ordinal)
+        var outputDirectory = requestedOutputDirectory
             .Replace("{base-no-trailing-separator}", workspace.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar), StringComparison.Ordinal)
-            .Replace("{base-upper-case}", workspace.BaseDirectory.ToUpperInvariant(), StringComparison.Ordinal);
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = outputDirectory });
+            .Replace("{base-upper-case}", workspace.BaseDirectory.ToUpperInvariant(), StringComparison.Ordinal)
+            .Replace("{base}", workspace.BaseDirectory, StringComparison.Ordinal);
+        workspace.WriteAppSettings();
         File.WriteAllText(Path.Combine(workspace.BaseDirectory, SentinelFileName), "keep me");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(1, exitCode);
         var error = workspace.Error.ToString();
@@ -41,29 +42,66 @@ public class DashboardRegeneratorTests
     }
 
     [Fact]
-    public void Regenerate_RelativeOutputDirectory_IsResolvedAgainstTheBaseDirectoryAndTheDashboardIsGenerated()
+    public void Regenerate_AbsoluteOutputDirectory_IsUsedAsIsAndTheDashboardIsGenerated()
     {
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = "MyDashboard" });
+        workspace.WriteAppSettings();
+        var outputDirectory = Path.Combine(workspace.DataDirectory, "AbsoluteDashboard");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(0, exitCode);
         Assert.Equal(string.Empty, workspace.Error.ToString());
-        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "MyDashboard", "index.html")));
+        Assert.True(File.Exists(Path.Combine(outputDirectory, "index.html")));
+        Assert.True(File.Exists(Path.Combine(outputDirectory, RegenerationRun.MarkerFileName)));
     }
 
     [Fact]
-    public void Regenerate_AbsoluteOutputDirectory_IsUsedAsIs()
+    public void Regenerate_ConfigurationHoldingALegacyOutputDirectoryKey_IgnoresIt()
     {
         using var workspace = new CliTestWorkspace();
-        var absoluteOutputDirectory = Path.Combine(workspace.DataDirectory, "AbsoluteDashboard");
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = absoluteOutputDirectory });
+        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = Path.Combine(workspace.DataDirectory, "FromConfiguration") });
+        var outputDirectory = Path.Combine(workspace.DataDirectory, "FromArgument");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(0, exitCode);
-        Assert.True(File.Exists(Path.Combine(absoluteOutputDirectory, "index.html")));
+        Assert.True(File.Exists(Path.Combine(outputDirectory, "index.html")));
+        Assert.False(Directory.Exists(Path.Combine(workspace.DataDirectory, "FromConfiguration")));
+    }
+
+    [Fact]
+    public void Regenerate_NonEmptyOutputDirectoryWithoutTheMarker_RefusesAndKeepsItsContents()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
+        var outputDirectory = Directory.CreateDirectory(Path.Combine(workspace.DataDirectory, "someone-elses-files")).FullName;
+        var precious = Path.Combine(outputDirectory, "precious.txt");
+        File.WriteAllText(precious, "keep me");
+
+        var exitCode = Regenerate(workspace, outputDirectory);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Failed to regenerate the Dashboard: Refusing to use '", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Contains(RegenerationRun.MarkerFileName, workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Equal("keep me", File.ReadAllText(precious));
+    }
+
+    [Fact]
+    public void Regenerate_YearAfterTheCurrentOne_ReturnsOneWithTheDashboardFailureMessageAndWritesNothing()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
+        var outputDirectory = DefaultOutputDirectory(workspace);
+        var configuration = AppConfigurationFactory.Build(workspace.BaseDirectory, "Production");
+        using var connection = OpenDatabase(workspace);
+
+        var exitCode = new DashboardRegenerator(workspace.Environment()).Regenerate(connection, configuration, outputDirectory, 2999);
+
+        Assert.Equal(1, exitCode);
+        Assert.StartsWith("Failed to regenerate the Dashboard: ", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.Contains("2999", workspace.Error.ToString(), StringComparison.Ordinal);
+        Assert.False(Directory.Exists(outputDirectory));
     }
 
     [Fact]
@@ -83,10 +121,10 @@ public class DashboardRegeneratorTests
     public void Regenerate_OutputDirectoryIsADriveRoot_ReturnsOneWithTheDashboardFailureMessage()
     {
         using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
         var driveRoot = Path.GetPathRoot(workspace.BaseDirectory)!;
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = driveRoot });
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, driveRoot);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("Failed to regenerate the Dashboard: Refusing to use", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -97,11 +135,11 @@ public class DashboardRegeneratorTests
     public void Regenerate_OutputDirectoryParentIsAFile_ReturnsOneWithTheDashboardFailureMessage()
     {
         using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
         var fileInTheWay = Path.Combine(workspace.DataDirectory, "not-a-directory");
         File.WriteAllText(fileInTheWay, "x");
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = Path.Combine(fileInTheWay, "Dashboard") });
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, Path.Combine(fileInTheWay, "Dashboard"));
 
         Assert.Equal(1, exitCode);
         Assert.StartsWith("Failed to regenerate the Dashboard: ", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -109,22 +147,20 @@ public class DashboardRegeneratorTests
 
     // The workspace is root/{base, logs-in, data}; the database lives in data, the default log output in base/Logs.
     [Theory]
-    [InlineData("..")]
-    [InlineData("../")]
     [InlineData("{root}")]
     [InlineData("{root-upper-case}")]
-    public void Regenerate_OutputDirectoryContainsTheBaseDirectory_RefusesAndDeletesNothing(string configuredOutputDirectory)
+    public void Regenerate_OutputDirectoryContainsTheBaseDirectory_RefusesAndDeletesNothing(string requestedOutputDirectory)
     {
-        ArgumentNullException.ThrowIfNull(configuredOutputDirectory);
+        ArgumentNullException.ThrowIfNull(requestedOutputDirectory);
         using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
         var root = Path.GetDirectoryName(workspace.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))!;
-        var outputDirectory = configuredOutputDirectory
+        var outputDirectory = requestedOutputDirectory
             .Replace("{root}", root, StringComparison.Ordinal)
             .Replace("{root-upper-case}", root.ToUpperInvariant(), StringComparison.Ordinal);
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = outputDirectory });
         var logSourceFile = workspace.WriteLogFile("u_ex260501_x_1.log", "keep me");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it contains the executable's own directory '", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -137,9 +173,9 @@ public class DashboardRegeneratorTests
     public void Regenerate_OutputDirectoryContainsTheDatabase_RefusesAndKeepsTheDatabase()
     {
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = workspace.DataDirectory });
+        workspace.WriteAppSettings();
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, workspace.DataDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it contains the aggregate database '", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -147,18 +183,19 @@ public class DashboardRegeneratorTests
     }
 
     [Theory]
-    [InlineData("Logs")]
-    [InlineData("./Logs/")]
-    [InlineData("Logs/nested/..")]
-    public void Regenerate_OutputDirectoryIsTheLogOutputDirectory_RefusesAndKeepsItsContents(string configuredOutputDirectory)
+    [InlineData("{base}Logs")]
+    [InlineData("{base}./Logs/")]
+    [InlineData("{base}Logs/nested/..")]
+    public void Regenerate_OutputDirectoryIsTheLogOutputDirectory_RefusesAndKeepsItsContents(string requestedOutputDirectory)
     {
-        ArgumentNullException.ThrowIfNull(configuredOutputDirectory);
+        ArgumentNullException.ThrowIfNull(requestedOutputDirectory);
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = configuredOutputDirectory });
+        workspace.WriteAppSettings();
+        var outputDirectory = requestedOutputDirectory.Replace("{base}", workspace.BaseDirectory, StringComparison.Ordinal);
         var logFile = Path.Combine(Directory.CreateDirectory(Path.Combine(workspace.BaseDirectory, "Logs")).FullName, "iislogparser.log");
         File.WriteAllText(logFile, "keep me");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it resolves to the log output directory, which this run would delete recursively.", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -171,11 +208,11 @@ public class DashboardRegeneratorTests
         using var workspace = new CliTestWorkspace();
         var outputDirectory = Path.Combine(workspace.DataDirectory, "shared");
         var logDirectory = Path.Combine(outputDirectory, "logs");
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = outputDirectory, ["LogOutputDirectory"] = logDirectory });
+        workspace.WriteAppSettings(new Dictionary<string, object?> { ["LogOutputDirectory"] = logDirectory });
         var logFile = Path.Combine(Directory.CreateDirectory(logDirectory).FullName, "iislogparser.log");
         File.WriteAllText(logFile, "keep me");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it contains the log output directory '", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -186,10 +223,10 @@ public class DashboardRegeneratorTests
     public void Regenerate_OutputDirectoryIsTheLogSourceDirectory_RefusesAndKeepsItsContents()
     {
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = workspace.LogSourceDirectory });
+        workspace.WriteAppSettings();
         var logSourceFile = workspace.WriteLogFile("u_ex260501_x_1.log", "keep me");
 
-        var exitCode = Regenerate(workspace, logSourceDirectory: workspace.LogSourceDirectory);
+        var exitCode = Regenerate(workspace, workspace.LogSourceDirectory, logSourceDirectory: workspace.LogSourceDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it resolves to the log source directory, which this run would delete recursively.", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -200,13 +237,13 @@ public class DashboardRegeneratorTests
     public void Regenerate_OutputDirectoryContainsTheLogSourceDirectory_RefusesAndKeepsItsContents()
     {
         using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
         var archiveDirectory = workspace.CreateDirectoryUnderRoot("archive");
         var nestedLogSourceDirectory = Directory.CreateDirectory(Path.Combine(archiveDirectory, "iis-logs")).FullName;
         var logSourceFile = Path.Combine(nestedLogSourceDirectory, "u_ex260501_x_1.log");
         File.WriteAllText(logSourceFile, "keep me");
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = archiveDirectory });
 
-        var exitCode = Regenerate(workspace, logSourceDirectory: nestedLogSourceDirectory);
+        var exitCode = Regenerate(workspace, archiveDirectory, logSourceDirectory: nestedLogSourceDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("it contains the log source directory '", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -223,30 +260,32 @@ public class DashboardRegeneratorTests
 
         Assert.Equal(1, exitCode);
         Assert.StartsWith("Failed to regenerate the Dashboard: ", workspace.Error.ToString(), StringComparison.Ordinal);
-        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+        Assert.False(Directory.Exists(DefaultOutputDirectory(workspace)));
     }
 
     [Fact]
     public void Regenerate_OutputDirectoryOnlySharesANamePrefixWithTheBaseDirectory_IsNotMistakenForIt()
     {
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = "../base-dashboard" });
+        workspace.WriteAppSettings();
+        var root = Path.GetDirectoryName(workspace.BaseDirectory.TrimEnd(Path.DirectorySeparatorChar))!;
+        var outputDirectory = Path.Combine(root, "base-dashboard");
 
-        var exitCode = Regenerate(workspace);
+        var exitCode = Regenerate(workspace, outputDirectory);
 
         Assert.Equal(0, exitCode);
         Assert.Equal(string.Empty, workspace.Error.ToString());
-        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "..", "base-dashboard", "index.html")));
+        Assert.True(File.Exists(Path.Combine(outputDirectory, "index.html")));
     }
 
     [Fact]
     public void Regenerate_OutputDirectoryIsInsideAProtectedDirectory_IsAllowed()
     {
         using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
         var outputDirectory = Path.Combine(workspace.DataDirectory, "dashboard");
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = outputDirectory });
 
-        var exitCode = Regenerate(workspace, logSourceDirectory: workspace.LogSourceDirectory);
+        var exitCode = Regenerate(workspace, outputDirectory, logSourceDirectory: workspace.LogSourceDirectory);
 
         Assert.Equal(0, exitCode);
         Assert.True(File.Exists(Path.Combine(outputDirectory, "index.html")));
@@ -260,10 +299,16 @@ public class DashboardRegeneratorTests
         return connection;
     }
 
-    private static int Regenerate(CliTestWorkspace workspace, string? logSourceDirectory = null)
+    private static string DefaultOutputDirectory(CliTestWorkspace workspace)
+    {
+        return Path.Combine(workspace.DataDirectory, "Dashboard");
+    }
+
+    private static int Regenerate(CliTestWorkspace workspace, string? outputDirectory = null, string? logSourceDirectory = null)
     {
         var configuration = AppConfigurationFactory.Build(workspace.BaseDirectory, "Production");
         using var connection = OpenDatabase(workspace);
-        return new DashboardRegenerator(workspace.Environment()).Regenerate(connection, configuration, logSourceDirectory);
+        return new DashboardRegenerator(workspace.Environment())
+            .Regenerate(connection, configuration, Path.GetFullPath(outputDirectory ?? DefaultOutputDirectory(workspace)), Year, logSourceDirectory);
     }
 }

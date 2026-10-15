@@ -31,6 +31,9 @@ internal sealed class CliTestWorkspace : IDisposable
 
     public string DataDirectory { get; }
 
+    /// <summary>Gets a Dashboard output directory that does not exist yet and that no run protects.</summary>
+    public string DashboardDirectory => Path.Combine(_root.FullName, "dashboard-out");
+
     /// <summary>Gets everything the runners wrote to their error writer so far.</summary>
     public StringWriter Error { get; } = new();
 
@@ -66,7 +69,6 @@ internal sealed class CliTestWorkspace : IDisposable
             ["IncludedRoots"] = Array.Empty<string>(),
             ["PortalBaseUrl"] = "portal.example.com",
             ["ArcGisServerBaseUrl"] = "gis.example.com",
-            ["OutputDirectory"] = "Dashboard",
         };
 
         foreach (var (key, value) in overrides ?? new Dictionary<string, object?>())

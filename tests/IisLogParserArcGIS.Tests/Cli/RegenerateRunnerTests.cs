@@ -18,7 +18,39 @@ public class RegenerateRunnerTests
 
         Assert.Equal(0, exitCode);
         Assert.Equal(string.Empty, workspace.Error.ToString());
-        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard", "index.html")));
+        Assert.True(File.Exists(Path.Combine(workspace.DashboardDirectory, "index.html")));
+    }
+
+    [Fact]
+    public void Run_PastYear_RegeneratesTheDashboardForThatYear()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
+        var databasePath = CreateEmptyAggregateDatabase(workspace);
+
+        var exitCode = Run(workspace, new RegenerateArguments { InputDatabasePath = databasePath, OutputDirectory = workspace.DashboardDirectory, Year = 2025 });
+
+        Assert.Equal(0, exitCode);
+        Assert.Equal(string.Empty, workspace.Error.ToString());
+        Assert.True(File.Exists(Path.Combine(workspace.DashboardDirectory, "index.html")));
+    }
+
+    [Fact]
+    public void Run_TwoYearsIntoTwoOutputDirectories_LeavesBothDashboardsInPlace()
+    {
+        using var workspace = new CliTestWorkspace();
+        workspace.WriteAppSettings();
+        var databasePath = CreateEmptyAggregateDatabase(workspace);
+        var firstDashboard = workspace.CreateDirectoryUnderRoot("dashboard-2025");
+        var secondDashboard = workspace.CreateDirectoryUnderRoot("dashboard-2026");
+
+        var firstExitCode = Run(workspace, new RegenerateArguments { InputDatabasePath = databasePath, OutputDirectory = firstDashboard, Year = 2025 });
+        var secondExitCode = Run(workspace, new RegenerateArguments { InputDatabasePath = databasePath, OutputDirectory = secondDashboard, Year = 2026 });
+
+        Assert.Equal(0, firstExitCode);
+        Assert.Equal(0, secondExitCode);
+        Assert.True(File.Exists(Path.Combine(firstDashboard, "index.html")));
+        Assert.True(File.Exists(Path.Combine(secondDashboard, "index.html")));
     }
 
     [Fact]
@@ -35,7 +67,7 @@ public class RegenerateRunnerTests
             $"The input database path '{databasePath}' does not exist. The regenerate verb reads an existing aggregate database - it never creates one.{Environment.NewLine}",
             workspace.Error.ToString());
         Assert.False(File.Exists(databasePath));
-        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+        Assert.False(Directory.Exists(workspace.DashboardDirectory));
     }
 
     [Fact]
@@ -60,7 +92,7 @@ public class RegenerateRunnerTests
 
         Assert.Equal(1, exitCode);
         Assert.StartsWith("Failed to initialize configuration or the input database: ", workspace.Error.ToString(), StringComparison.Ordinal);
-        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+        Assert.False(Directory.Exists(workspace.DashboardDirectory));
     }
 
     [Fact]
@@ -82,24 +114,24 @@ public class RegenerateRunnerTests
     {
         using var workspace = new CliTestWorkspace();
         workspace.WriteAppSettings();
-        workspace.WriteOverlay("Development", new Dictionary<string, object?> { ["OutputDirectory"] = "DevDashboard" });
+        workspace.WriteOverlay("Development", new Dictionary<string, object?> { ["LocalTimeZone"] = "Not/AZone" });
         var databasePath = CreateEmptyAggregateDatabase(workspace);
 
-        var exitCode = new RegenerateRunner(workspace.Environment("Development")).Run(new RegenerateArguments { InputDatabasePath = databasePath });
+        var exitCode = new RegenerateRunner(workspace.Environment("Development"))
+            .Run(new RegenerateArguments { InputDatabasePath = databasePath, OutputDirectory = workspace.DashboardDirectory, Year = 2026 });
 
-        Assert.Equal(0, exitCode);
-        Assert.True(File.Exists(Path.Combine(workspace.BaseDirectory, "DevDashboard", "index.html")));
-        Assert.False(Directory.Exists(Path.Combine(workspace.BaseDirectory, "Dashboard")));
+        Assert.Equal(1, exitCode);
+        Assert.Contains("Not/AZone", workspace.Error.ToString(), StringComparison.Ordinal);
     }
 
     [Fact]
     public void Run_DashboardOutputResolvesToTheBaseDirectory_ReturnsOneAndKeepsTheBaseDirectory()
     {
         using var workspace = new CliTestWorkspace();
-        workspace.WriteAppSettings(new Dictionary<string, object?> { ["OutputDirectory"] = "." });
+        workspace.WriteAppSettings();
         var databasePath = CreateEmptyAggregateDatabase(workspace);
 
-        var exitCode = Run(workspace, databasePath);
+        var exitCode = Run(workspace, databasePath, workspace.BaseDirectory);
 
         Assert.Equal(1, exitCode);
         Assert.Contains("Refusing to use", workspace.Error.ToString(), StringComparison.Ordinal);
@@ -114,8 +146,20 @@ public class RegenerateRunnerTests
         return databasePath;
     }
 
-    private static int Run(CliTestWorkspace workspace, string inputDatabasePath)
+    private static int Run(CliTestWorkspace workspace, string inputDatabasePath, string? outputDirectory = null)
     {
-        return new RegenerateRunner(workspace.Environment()).Run(new RegenerateArguments { InputDatabasePath = inputDatabasePath });
+        var arguments = new RegenerateArguments
+        {
+            InputDatabasePath = inputDatabasePath,
+            OutputDirectory = outputDirectory ?? workspace.DashboardDirectory,
+            Year = 2026,
+        };
+
+        return Run(workspace, arguments);
+    }
+
+    private static int Run(CliTestWorkspace workspace, RegenerateArguments arguments)
+    {
+        return new RegenerateRunner(workspace.Environment()).Run(arguments);
     }
 }

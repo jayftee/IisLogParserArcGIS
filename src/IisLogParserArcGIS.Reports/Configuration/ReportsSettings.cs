@@ -44,10 +44,4 @@ public sealed class ReportsSettings
 #pragma warning disable CA1056 // A bare host substituted into a URL template, not a well-formed System.Uri on its own.
     public string ArcGisServerBaseUrl { get; set; } = string.Empty;
 #pragma warning restore CA1056
-
-    /// <summary>
-    /// Gets or sets the directory (relative to the executable, or absolute) each Regeneration Run (re)generates
-    /// the Dashboard into.
-    /// </summary>
-    public string OutputDirectory { get; set; } = string.Empty;
 }

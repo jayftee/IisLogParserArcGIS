@@ -59,8 +59,7 @@ Edit `src/IisLogParserArcGIS/appsettings.json` (or add an environment-specific o
   "PortalWebAdaptorName": "portal",
   "IncludedRoots": ["arcgis", "charon", "deimos", "europa", "galatea", "iapetus", "kerberos", "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel"],
   "PortalBaseUrl": "geospatial.alberta.ca/portal",
-  "ArcGisServerBaseUrl": "geospatial.alberta.ca",
-  "OutputDirectory": "Dashboard"
+  "ArcGisServerBaseUrl": "geospatial.alberta.ca"
 }
 ```
 
@@ -70,19 +69,23 @@ The compiled executable is driven by one of three verbs. There is no default —
 
 ```powershell
 IisLogParserArcGIS.exe harvest <logSourceDirectory> <targetLocalDate:yyyy-MM-dd> <outputDatabasePath>
-IisLogParserArcGIS.exe regenerate <inputDatabasePath>
-IisLogParserArcGIS.exe harvest-regenerate <logSourceDirectory> <targetLocalDate:yyyy-MM-dd> <outputDatabasePath>
+IisLogParserArcGIS.exe regenerate <inputDatabasePath> <outputDirectory> --year <yyyy>
+IisLogParserArcGIS.exe harvest-regenerate <logSourceDirectory> <targetLocalDate:yyyy-MM-dd> <outputDatabasePath> <outputDirectory>
 ```
 
 | Verb | Does | Use it for |
 | --- | --- | --- |
 | `harvest` | A Harvest Run only — parses one Local Date's logs and replaces that date's Daily Batch. Never touches the Dashboard. | Backfilling many dates (see below), where regenerating after every date would be wasted work. |
-| `regenerate` | A Regeneration Run only — rebuilds the entire Dashboard from an existing aggregate database's current contents. Never harvests. | Refreshing the Dashboard on demand, or as the last step of a backfill. |
-| `harvest-regenerate` | Both, in sequence — today's routine, single-date behavior. | The day-to-day scheduled run (e.g. Windows Task Scheduler). |
+| `regenerate` | A Regeneration Run only — rebuilds the entire Dashboard for `--year` from an existing aggregate database's current contents. Never harvests. | Refreshing the Dashboard on demand, or as the last step of a backfill. |
+| `harvest-regenerate` | Both, in sequence — today's routine, single-date behavior. The Dashboard is the year of `<targetLocalDate>`. | The day-to-day scheduled run (e.g. Windows Task Scheduler). |
 
 ```powershell
-IisLogParserArcGIS.exe harvest-regenerate "D:\IISLogs" 2026-03-06 "D:\Aggregates\usage.sqlite"
+IisLogParserArcGIS.exe harvest-regenerate "D:\IISLogs" 2026-03-06 "D:\Aggregates\Iis2026.sqlite" "D:\Dashboards\2026"
 ```
+
+**The output directory and the year are always explicit** — never read from configuration, and never taken from the clock. Two runs against different databases (say `Iis2025.sqlite` and `Iis2026.sqlite`, run side by side) must be given different output directories, so neither can overwrite the other's Dashboard. `regenerate` takes the year as `--year`; `harvest-regenerate` takes it from `<targetLocalDate>`. A year is reported in full: its "All" ranges cover January 1 through December 31 (or through today, for the current year), and "Last 7 Days" is always the real last seven days, so it is empty for a year that is already over.
+
+A Regeneration Run deletes and rebuilds its output directory, so it first checks it: the directory must not exist, be empty, or hold a Dashboard a previous run generated — every generated Dashboard carries an empty `.iis-dashboard` marker file. Any other non-empty directory is refused with a clear message and nothing is deleted, so a mistyped path cannot wipe a directory this tool did not create. A Dashboard generated before this marker existed has none; empty its directory by hand once, before its first run with this version.
 
 Typical output:
 
@@ -95,24 +98,23 @@ A non-zero exit code and a clear stderr message mean something needs attention �
 
 ### Backfilling a range of dates
 
-Each of `harvest`/`harvest-regenerate` processes exactly one local date per run. To process a whole backlog of log files (e.g. a full year) into one output database without modifying the CLI, use `Scripts\Invoke-IisLogBackfill.ps1`, copied next to the executable at build time. It scans a log source directory for every distinct UTC date embedded in `u_ex<YYMMDD>*.log` file names, invokes `harvest` once per date in sequence against the same output database, then invokes `regenerate` exactly once after the loop finishes — so a full year's backfill regenerates the Dashboard once, not once per date:
+Each of `harvest`/`harvest-regenerate` processes exactly one local date per run. To process a whole year of log files into one output database without modifying the CLI, use `Scripts\Invoke-IisLogBackfill.ps1`, copied next to the executable at build time. It walks every Local Date of `-Year` (January 1 through December 31, or through today for the current year), invokes `harvest` once per date in sequence against the same output database, then invokes `regenerate` exactly once after the loop finishes — so a full year's backfill regenerates the Dashboard once, not once per date. Dates come from the calendar, not from the log files' names, so it works with any `LocalTimeZone` and whether the log folder holds one year or many:
 
 ```powershell
-Scripts\Invoke-IisLogBackfill.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDatabasePath "D:\Aggregates\usage.sqlite"
+Scripts\Invoke-IisLogBackfill.ps1 -LogSourceDirectory "D:\IISLogs\2026" -OutputDatabasePath "D:\Aggregates\Iis2026.sqlite" -OutputDirectory "D:\Dashboards\2026" -Year 2026
 ```
 
-A date whose invocation fails (e.g. a missing adjacent-day file) is recorded and the run continues with the next date; the script prints a final summary of how many dates succeeded/failed and exits non-zero if any date failed. The final `regenerate` call runs unconditionally, even if every date failed. This only derives the correct date when the configured `LocalTimeZone` is `UTC` — see the script's comment-based help (`Get-Help .\Invoke-IisLogBackfill.ps1 -Full`) for the exact boundary-case caveat.
+A date whose invocation fails (e.g. a missing adjacent-day file) is recorded and the run continues with the next date; the script prints a final summary of how many dates succeeded/failed and exits non-zero if any date failed. The final `regenerate` call runs unconditionally, even if every date failed. With one log folder per year, December 31 needs the next year's first log file and is reported as failed — expected, not a bug. Two backfills for different years can safely run side by side (each has its own database and output directory).
 
 ### Scheduled daily runs
 
-For an unattended Scheduled Task, use `Scripts\Invoke-IisLogDailyRun.ps1` instead of calling `harvest-regenerate` directly — it computes "today" (or "yesterday", with `-Yesterday`) itself, so the task's own arguments never need editing as the calendar moves forward:
+For an unattended Scheduled Task, point the task at one of the `.bat` wrappers shipped next to the scripts — never at PowerShell directly. Each computes the date it needs, builds the per-year database and output paths from that date's year, and calls `Scripts\Invoke-IisLogDailyRun.ps1`, which harvests exactly the `-TargetDate` it is given and regenerates that date's year:
 
 ```powershell
-Scripts\Invoke-IisLogDailyRun.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDatabasePath "D:\Aggregates\usage.sqlite"
-Scripts\Invoke-IisLogDailyRun.ps1 -LogSourceDirectory "D:\IISLogs" -OutputDatabasePath "D:\Aggregates\usage.sqlite" -Yesterday
+Scripts\Invoke-IisLogDailyRun.ps1 -LogSourceDirectory "D:\IISLogs\2026" -OutputDatabasePath "D:\Aggregates\Iis2026.sqlite" -OutputDirectory "D:\Dashboards\2026" -TargetDate 2026-10-14
 ```
 
-Schedule it twice: hourly with no switch, so each run re-harvests however much of today's logs exist so far (safe to repeat — a Daily Batch replace is always a full replace of that date's rows, never incremental), and once more shortly after midnight (e.g. 02:00) with `-Yesterday`, to catch the previous day's final log lines after that day's last hourly run already happened. Unlike the backfill script, this one never scans the log source directory for dates — it always targets exactly the date it computed, so its exit code is simply whatever `harvest-regenerate` itself returned.
+Schedule two tasks: `IisLogHourly.bat` every hour (it harvests today, so each run re-harvests however much of today's logs exist so far — safe to repeat, since a Daily Batch replace is always a full replace of that date's rows, never incremental), and `IisLogNightly.bat` once shortly after midnight (e.g. 02:00), which harvests yesterday to catch the previous day's final log lines after that day's last hourly run already happened. `IisLogBackfill.bat [year]` wraps the backfill script the same way. They are templates: edit the three placeholder paths at the top (`LOG_ROOT`, `DATABASE_ROOT`, `DASHBOARD_ROOT`). The year in the database and Dashboard paths comes from the harvested date, not the clock — at 02:00 on January 1, the nightly run harvests December 31 of the year that just ended and writes to that year's database. The script takes an explicit date (there is no `-Yesterday` switch); a caller that wants yesterday computes it. Unlike the backfill script, this one never scans the log source directory for dates, so its exit code is simply whatever `harvest-regenerate` itself returned.
 
 ## Configuration
 
@@ -122,7 +124,7 @@ Any setting can also be overridden for a single run with an environment variable
 
 | Key                  | Default     | Meaning                                                                                                   |
 | -------------------- | ----------- | ----------------------------------------------------------------------------------------------------------- |
-| `LocalTimeZone`      | `UTC`       | A `TimeZoneInfo`-compatible ID (IANA, e.g. `America/Edmonton`, or a Windows ID). Drives `local_date`/`local_date_time` derivation for harvesting *and* the Dashboard's "today"/"this year" boundaries - keep these two uses in mind, since it's read once and used for both. |
+| `LocalTimeZone`      | `UTC`       | A `TimeZoneInfo`-compatible ID (IANA, e.g. `America/Edmonton`, or a Windows ID). Drives `local_date`/`local_date_time` derivation for harvesting *and* the Dashboard's "today" boundary - keep these two uses in mind, since it's read once and used for both. |
 | `LogOutputDirectory` | `Logs`      | Where the rolling application log file is written (relative to the executable, or absolute).                |
 | `LogLevel`           | `Warning`   | Minimum level for the application's *own* code. `Microsoft.*` framework namespaces are always pinned at `Error`, regardless of this setting. |
 | `PortalWebAdaptorName` | `portal`  | This deployment's ArcGIS Portal Web Adaptor name (case-insensitive match). Drives which `cs-uri-stem` values are recognized as Portal item-access requests for the by-Portal-item aggregate. |
@@ -130,7 +132,6 @@ Any setting can also be overridden for a single run with an environment variable
 | `IncludedRoots`      | `[]`        | Flat, lowercase allow-list of Root/Site names shown in the Dashboard's ArcGIS Server section. A Root present in the aggregate database but absent from this list is silently excluded from every report. |
 | `PortalBaseUrl`      | `""`        | This deployment's ArcGIS Portal base URL: the host, plus whatever path prefix (typically a Web Adaptor name) is actually needed to reach Portal's own web pages there - e.g. `portal.example.com` when Portal sits at the domain root, or `geospatial.example.gov/portal` when it doesn't. No scheme - always linked as `https://`. Used to link every Portal Item reference in the Dashboard to that item's live page on Portal. |
 | `ArcGisServerBaseUrl` | `""`       | This deployment's ArcGIS Server base host. Unlike `PortalBaseUrl`, every site (Included Root) is a top-level path segment on this one shared host rather than a host of its own - e.g. `geospatial.example.gov`, with a service reachable at `https://geospatial.example.gov/{site}/rest/services/...`. No scheme - always linked as `https://`. Used to link every ArcGIS Server service reference in the Dashboard to that service's own live REST endpoint. |
-| `OutputDirectory`    | `Dashboard` | Where each run (re)generates the Dashboard (relative to the executable, or absolute). Always a full rebuild - a prior run's output is replaced, never merged with.                |
 
 Logging goes to both the console and a rolling file (10 MB rollover, last 10 files retained) under `LogOutputDirectory`, one plain templated line per event.
 
@@ -293,7 +294,7 @@ sequenceDiagram
     participant Sections as the 11 Section Builders
     participant Writer as StaticPageWriter
 
-    User->>Program: exe harvest-regenerate <sourceDir> <date> <outputDb>
+    User->>Program: exe harvest-regenerate <sourceDir> <date> <outputDb> <outputDir>
     Program->>Cli: Validate(args)
     Cli-->>Program: ParsedArguments
     Program->>Cfg: Build + BindAppSettings
@@ -618,7 +619,7 @@ classDiagram
 
 ### Reports: Dashboard generation
 
-`RegenerationRun.Run` is the Reports project's one entry point ([`RegenerationRun.cs`](src/IisLogParserArcGIS.Reports/RegenerationRun.cs)): resolve this run's year-to-date boundaries, delete and recreate the output directory (always a full rebuild — [ADR 0005](docs/adr/0005-pregenerate-dashboard-as-static-html.md)), write the shared static assets (`site.css`, `dashboard.js`), then call eleven Section Builders in sequence (the three per-device builders each run twice, once for Fieldmaps and once for Survey123), each independently querying `Data` and writing its own page(s):
+`RegenerationRun.Run` is the Reports project's one entry point ([`RegenerationRun.cs`](src/IisLogParserArcGIS.Reports/RegenerationRun.cs)): resolve this run's boundaries for the requested year, check the output directory is new, empty or marked `.iis-dashboard`, delete and recreate it (always a full rebuild — [ADR 0005](docs/adr/0005-pregenerate-dashboard-as-static-html.md)), write the shared static assets (`site.css`, `dashboard.js`), then call eleven Section Builders in sequence (the three per-device builders each run twice, once for Fieldmaps and once for Survey123), each independently querying `Data` and writing its own page(s):
 
 ```mermaid
 graph TB

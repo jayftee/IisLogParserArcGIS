@@ -51,7 +51,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.True(File.Exists(ToFullPath(outputDirectory.Path, relativePath)));
     }
@@ -65,7 +65,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, relativePath));
 
@@ -78,7 +78,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/forwarded-for-ip/all.html"));
 
@@ -92,7 +92,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/forwarded-for-ip/all.html"));
         var oracleRows = QueryOracle(connection, new FlatAggregateColumn("aggregated_by_forwarded_for_ip", "forwarded_for_ip"));
@@ -106,7 +106,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/uri/all.html"));
         var oracleRows = QueryOracle(connection, new FlatAggregateColumn("aggregated_by_uri", "uri_stem"));
@@ -120,7 +120,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/user-agent/all.html"));
         var oracleRows = QueryOracle(connection, new FlatAggregateColumn("aggregated_by_user_agent", "user_agent"));
@@ -134,7 +134,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/referer/all.html"));
         var oracleRows = QueryOracle(connection, new FlatAggregateColumn("aggregated_by_referer", "referer", "referer <> '-'"));
@@ -153,7 +153,7 @@ public sealed class FlatLeaderboardSectionTests
             new { Start = _yearStart, End = _today });
         Assert.True(placeholderCount > 0, "Expected the harvested fixture to contain at least one '-' referer row for this test to be meaningful.");
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/referer/all.html"));
         var dataRows = ExtractDataRows(html);
@@ -183,7 +183,7 @@ public sealed class FlatLeaderboardSectionTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = File.ReadAllText(ToFullPath(outputDirectory.Path, "leaderboard/forwarded-for-ip/all.html"));
         var dataRows = ExtractDataRows(html);
@@ -307,7 +307,6 @@ public sealed class FlatLeaderboardSectionTests
                 "mimas", "namaka", "oberon", "phobos", "rhea", "titan", "umbriel",
             ],
             PortalBaseUrl = "portal.example.com",
-            OutputDirectory = "Dashboard",
         };
     }
 

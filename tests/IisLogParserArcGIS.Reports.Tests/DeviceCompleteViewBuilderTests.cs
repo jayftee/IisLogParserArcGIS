@@ -37,7 +37,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.CompleteViewHref);
         var header = ExtractDataTableRows(html)[0].EnumerateArray().Select(cell => cell.GetString()).ToArray();
@@ -56,7 +56,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var tsvRelativePath = Path.ChangeExtension(section.CompleteViewHref, ".tsv");
         var tsvPath = Path.Combine(outputDirectory.Path, tsvRelativePath.Replace('/', Path.DirectorySeparatorChar));
@@ -84,7 +84,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.CompleteViewHref);
 
@@ -99,7 +99,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var rows = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.CompleteViewHref)).Skip(1).ToArray();
         var oracle = connection
@@ -149,7 +149,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var lastSeen = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.CompleteViewHref)).Skip(1).Select(row => row[5].GetString()!).ToArray();
 
@@ -167,7 +167,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = SqliteConnectionFactory.Open(_fixture.DatabasePath);
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var rows = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.CompleteViewHref)).Skip(1).ToArray();
 
@@ -199,7 +199,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var completeView = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.CompleteViewHref)).Skip(1).ToDictionary(row => CellText(row[1]));
         var leaderboardAll = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.LeaderboardHitsHref(DashboardDateRange.All))).Skip(1).Select(row => row[0].GetString()).ToArray();
@@ -223,7 +223,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var row = ExtractDataTableRows(ReadPage(outputDirectory.Path, section.CompleteViewHref)).Skip(1).Single(candidate => CellText(candidate[1]) == "xss-device");
 
@@ -242,7 +242,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         var html = ReadPage(outputDirectory.Path, section.CompleteViewHref);
 
@@ -265,7 +265,7 @@ public sealed class DeviceCompleteViewBuilderTests
         using var outputDirectory = new TempDirectoryPath();
         using var connection = workingCopy.OpenConnection();
 
-        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path);
+        RegenerationRun.Run(connection, CreateSettings(), CreateTimeProvider(), outputDirectory.Path, 2026);
 
         Assert.Contains("No data for this range.", ReadPage(outputDirectory.Path, section.CompleteViewHref), StringComparison.Ordinal);
     }
